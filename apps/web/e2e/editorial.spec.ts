@@ -113,3 +113,19 @@ test("with motion off the inner-page disc is still", async ({ page }) => {
   await page.goto("/terms?motion=off");
   await expect(page.locator(".page-disc__spin")).toHaveCSS("animation-name", "none");
 });
+
+test("the ruler edges slide sideways while the page scrolls and stay put with motion off", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".ticker__item").first()).toBeVisible();
+  const shift = () => page.locator(".ticker-wrap").evaluate((el) => el.style.getPropertyValue("--ruler-shift"));
+  await page.evaluate(() => window.scrollTo(0, 50));
+  await expect.poll(shift).toBe("30.00px");
+  await page.evaluate(() => window.scrollTo(0, 100));
+  await expect.poll(shift).toBe("0.00px");
+  await page.evaluate(() => window.scrollTo(0, 75));
+  await expect.poll(shift).toBe("45.00px");
+  await page.goto("/?motion=off");
+  await page.evaluate(() => window.scrollTo(0, 300));
+  await page.waitForTimeout(200);
+  expect(await page.locator(".ticker-wrap").evaluate((el) => el.style.getPropertyValue("--ruler-shift"))).toBe("");
+});

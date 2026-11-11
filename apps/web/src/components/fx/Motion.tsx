@@ -15,6 +15,33 @@ export function MotionControl({ className = "" }: { className?: string }) {
   return <button type="button" className={`btn motion-control ${className}`} disabled={forced} onClick={cycle}>Motion: {labels[mode]}</button>;
 }
 
+/**
+ * Slides the ruler edges sideways as the page scrolls. One passive listener, one frame at a time, and it writes
+ * a single length to the few elements that draw a ruler. The tick pattern repeats every 60 px, so the loop has no seam.
+ */
+function RulerScroll({ active, path }: { active: boolean; path: string }) {
+  useEffect(() => {
+    if (!active) return;
+    let frame = 0;
+    const apply = () => {
+      frame = 0;
+      const shift = `${((window.scrollY * 0.6) % 60).toFixed(2)}px`;
+      document.querySelectorAll<HTMLElement>(".ruler-edge, .ticker-wrap, .site-footer").forEach((el) => el.style.setProperty("--ruler-shift", shift));
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(apply);
+    };
+    apply();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+      document.querySelectorAll<HTMLElement>(".ruler-edge, .ticker-wrap, .site-footer").forEach((el) => el.style.removeProperty("--ruler-shift"));
+    };
+  }, [active, path]);
+  return null;
+}
+
 export function MotionRoot({ children }: { children: ReactNode }) {
   const [choice, setChoice] = useState<Motion | null>(null);
   const [system, setSystem] = useState(false);
@@ -75,6 +102,7 @@ export function MotionRoot({ children }: { children: ReactNode }) {
     <Context.Provider value={{ mode, forced, cycle }}>
       <div className="motion-root" data-motion={active ? "full" : "still"}>
         {ready && mode !== "off" && <LiveBackground active={active} debug={debug} />}
+        <RulerScroll active={active} path={path} />
         {changedPath && <div key={path} className="route-wipe" aria-hidden="true" />}
         {children}
       </div>
