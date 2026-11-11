@@ -55,6 +55,16 @@ Dengan rentang sebesar itu, selisih median beranda (sekitar 50 ms) tidak dapat d
 - Tes: 115 unit, 78 e2e lulus (70 + 8 baru); 40 e2e pembuat gambar layar dilewati pada jalan biasa.
 - Kecepatan bingkai canvas yang sudah ada (Datum Live) diukur ulang oleh `live.spec.ts`: 59,6 sampai 60,0 fps di Chromium Headless Shell.
 
+## Pembuka beranda (D-079)
+
+- Dua bentuk: kunjungan pertama ke `/` dalam satu tab memakai overlay (garis ukur, dial menyetel dan mengunci, cap slot, belahan bergigi penggaris, cakram menyusut ke cakram hero); sesudahnya hanya judul yang dicap kata demi kata. Hanya CSS, satu komponen kecil (`Intro.tsx`), dan satu skrip gerbang inline; tidak ada library baru.
+- Garis waktu dari cat pertama: garis 0,1 detik, dial mengunci 0,5, cap 0,85, belahan 1,25, selesai paling lambat 1,75 detik. Tanpa bilah loading palsu.
+- Dilewati: `?motion=off`, Motion Reduced atau Off, preferensi sistem kurangi gerakan, Save-Data, penyimpanan sesi tidak tersedia, halaman selain beranda, dan `localStorage datum.intro=off`. Klik, tombol, scroll, atau roda mempercepat keluar (sekitar 0,3 detik).
+- Hasil ukur (Lighthouse 13.6.0, mobile, Chrome headless di kontainer, tiga kali jalan tiap varian; derau antar-jalan besar). Beranda dengan pembuka: LCP 944, 996, 1005 ms; CLS 0; TBT 195, 94, 77 ms; kinerja 97, 99, 100; aksesibilitas 100. Beranda dengan `?motion=off`: LCP 947, 948, 953 ms; CLS 0; TBT 126, 179, 98 ms; kinerja 99, 98, 99; aksesibilitas 100. LCP tidak memburuk, jadi bentuk overlay dipertahankan.
+- JS beranda (potongan statis gzip + skrip inline gzip) versus commit Datum Live `c8a43e9`: selisih sekitar 16,7 KB untuk seluruh lapisan Editorial, di bawah anggaran 20 KB. Metode ini berbeda dari angka +3,1 KB sebelumnya, jadi kedua angka tidak dibandingkan langsung.
+- Tangkapan garis waktu: `screens/editorial/intro-1280-frames.png` dan `intro-390-frames.png` (bingkai pada 0,3; 0,7; 1,0; 1,35; 1,5; 1,65 detik, dijeda pada waktu tersebut).
+- Tes: `e2e/intro.spec.ts` (12 tes: muncul sekali per tab, slot asli atau tanda hubung, berakhir sendiri tanpa skrip, lewati dengan tombol, tidak berulang saat muat ulang atau kembali ke beranda, judul sama, mati pada Off, URL, dan pengaturan sistem, hanya beranda, CLS 0 dan axe 0, tidak meluap di 360 px).
+
 ## Belum terukur
 
 - Perangkat fisik berspesifikasi rendah.
@@ -65,3 +75,4 @@ Dengan rentang sebesar itu, selisih median beranda (sekitar 50 ms) tidak dapat d
 ## Yang sengaja tidak ditiru dari acuan
 
 Tema medieval dan ukiran, huruf gotik, angka Romawi, "Plate", segel, tekstur perkamen, teks, nama, dan aset. Penomoran "Reading 01–04", cakram survei, cap slot, dan tepi penggaris adalah milik Datum.
+- Pembuka beranda belum diukur di perangkat fisik berspesifikasi rendah, di Safari, atau di Firefox; sintaks `:not()` dengan selektor kompleks yang dipakai untuk mengecualikan pembuka dari mode "still" belum diuji di sana.

@@ -14,6 +14,8 @@ export default defineConfig({
   use: {
     baseURL,
     ...devices["Desktop Chrome"],
+    // The opening sequence is switched off for the general suite so it does not cover the page; intro.spec.ts turns it back on.
+    storageState: { cookies: [], origins: [{ origin: baseURL, localStorage: [{ name: "datum.intro", value: "off" }] }] },
     launchOptions: process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {},
   },
   webServer: {

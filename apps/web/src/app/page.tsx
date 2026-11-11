@@ -1,3 +1,4 @@
+import { Fragment, type CSSProperties } from "react";
 import Link from "next/link";
 import { MintLookup } from "@/components/MintLookup";
 import { ExampleClaim } from "@/components/ExampleClaim";
@@ -5,6 +6,7 @@ import { NotTold } from "@/components/NotTold";
 import { StatusMark } from "@/components/StatusMark";
 import { HomeData } from "@/components/home/HomeData";
 import { HeroField } from "@/components/home/HeroField";
+import { Intro } from "@/components/home/Intro";
 import { Ticker } from "@/components/home/Ticker";
 import { StatTiles } from "@/components/home/StatTiles";
 import { STATUS_LABEL, type Status } from "@/lib/view";
@@ -16,15 +18,33 @@ const KINDS: { status: Status; line: string }[] = [
   { status: "unsupported", line: "This version has no rule for that statement." },
 ];
 
+const HEADLINE = "What is true about this token, right now?";
+
+/** The headline as words, so each one can be stamped in. The text content and the spaces are unchanged. */
+function Words({ text }: { text: string }) {
+  const words = text.split(" ");
+  return (
+    <>
+      {words.map((w, i) => (
+        <Fragment key={i}>
+          <span className="stamp-w" style={{ "--i": i } as CSSProperties}>{w}</span>
+          {i < words.length - 1 ? " " : null}
+        </Fragment>
+      ))}
+    </>
+  );
+}
+
 export default function Home() {
   return (
     <HomeData>
+      <Intro />
       <div className="home">
         <section className="band on-night hero" aria-labelledby="home-h">
           <div className="band__in hero__grid">
             <div className="hero__copy stack">
               <p className="caps">Datum · Solana</p>
-              <h1 id="home-h">What is true about this token, right now?</h1>
+              <h1 id="home-h"><Words text={HEADLINE} /></h1>
               <p className="lede">
                 Paste a token address. Datum reads the chain in your browser and checks each claim wallets have published about it, then shows what holds now and what could still change.
               </p>

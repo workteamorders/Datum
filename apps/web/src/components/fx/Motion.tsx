@@ -93,6 +93,14 @@ export function MotionRoot({ children }: { children: ReactNode }) {
     else delete window.__fx;
   }, [debug]);
 
+  // Once motion is reduced, off or the data saver is on, the opening sequence and the stamped headline stop at once.
+  const calm = ready && (mode !== "full" || system || saveData);
+  useEffect(() => {
+    if (!calm) return;
+    document.documentElement.removeAttribute("data-intro");
+    document.documentElement.removeAttribute("data-intro-split");
+  }, [calm]);
+
   function cycle() {
     const next = mode === "full" ? "reduced" : mode === "reduced" ? "off" : "full";
     setChoice(next);

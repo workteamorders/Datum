@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { MotionRoot } from "@/components/fx/Motion";
+import { INTRO_GATE } from "@/lib/intro";
 import "@/styles/fonts.css";
 import "@/styles/tokens.css";
 import "@/styles/base.css";
@@ -21,8 +22,10 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, them
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Decides the opening sequence before the first paint. Only reads settings and sets one attribute. */}
+        <script dangerouslySetInnerHTML={{ __html: INTRO_GATE }} />
         {/* The fonts used above the fold start loading with the HTML. */}
         <link rel="preload" href="/fonts/chivo-latin-400-normal.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/chivo-latin-800-normal.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />

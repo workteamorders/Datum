@@ -18,7 +18,7 @@ const SLOT_METHOD = "getLatestBlockhash";
 /** How often the slot is read again while the page is open and visible. */
 const SLOT_REFRESH_MS = 15_000;
 
-async function readSlot(): Promise<number | null> {
+export async function readSlot(): Promise<number | null> {
   try {
     const r = await rpc.call<{ context?: { slot?: number } }>(SLOT_METHOD, [{ commitment: "confirmed" }]);
     return typeof r?.context?.slot === "number" ? r.context.slot : null;

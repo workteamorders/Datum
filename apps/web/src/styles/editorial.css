@@ -261,3 +261,63 @@ main:has(.page-hero) > .wrap { max-width: none; padding-inline: 0; }
 /* The formula lens: a small canvas that follows the pointer, above the page, never catching a click. */
 .formula-lens { position: fixed; left: 0; top: 0; z-index: 6; pointer-events: none; will-change: transform; }
 @media (prefers-reduced-motion: reduce), (pointer: coarse) { .formula-lens { display: none; } }
+
+/* ---------- Opening sequence (home, first visit in a tab) ----------
+   Timeline from first paint: line 0.1 s, dial settles and locks 0.5 s, slot stamped 0.85 s, split 1.25 s, gone by 1.75 s.
+   The overlay ends itself in CSS, so nothing depends on scripts. The headline words wait for the split, then stamp in. */
+.intro { display: none; position: fixed; inset: 0; z-index: 40; overflow: hidden; animation: intro-end 10ms steps(1, start) 1750ms forwards; }
+html[data-intro="lock"] .intro { display: block; }
+.intro__half { position: absolute; left: 0; right: 0; height: 50%; background: var(--color-bg); }
+.intro__half--top { top: 0; animation: intro-top 450ms var(--ease-stamp) 1250ms both; }
+.intro__half--bottom { bottom: 0; animation: intro-bottom 450ms var(--ease-stamp) 1250ms both; }
+/* The teeth of the two halves are brass and appear as the split begins, so the seam reads against the night page beneath. */
+.intro .ruler-edge { --rc: var(--color-accent); transform: none; animation: intro-teeth 120ms linear 1200ms both; }
+.intro .ruler-edge--top { transform: scaleY(-1); }
+.intro__stage { z-index: 2; position: absolute; inset: 0; display: grid; grid-template-rows: 1fr auto 1fr; justify-items: center; }
+.intro__line { position: absolute; left: 0; right: 0; top: 50%; height: 3px; margin-top: -1.5px; background: var(--color-accent); transform-origin: 0 50%; animation: intro-line 380ms var(--ease-stamp) 100ms both, intro-line-out 160ms linear 1000ms both; }
+.intro__disc { grid-row: 2; width: min(72vmin, 26rem); aspect-ratio: 1; animation: intro-travel 450ms var(--ease-stamp) 1250ms both; }
+.intro__lock { width: 100%; height: 100%; animation: intro-in 360ms ease-out both, intro-lock 260ms var(--ease-stamp) 480ms both; }
+.intro__lock svg { width: 100%; height: 100%; overflow: visible; }
+.intro__settle { transform-box: view-box; transform-origin: 50% 50%; animation: intro-settle 640ms var(--ease-stamp) 60ms both; }
+.intro__stamp {
+  grid-row: 3; align-self: start; margin: var(--space-6) 0 0; padding: var(--space-2) var(--space-3); max-width: none;
+  border: 2px solid var(--color-accent); background: var(--color-bg); color: var(--color-accent);
+  font-size: var(--text-sm); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; text-align: center;
+  transform: rotate(-3deg); animation: intro-stamp 260ms var(--ease-stamp) 850ms both, intro-stamp-out 220ms linear 1250ms both;
+}
+.intro__stamp-label { color: var(--color-ink); }
+/* The number's width is fixed so the stamp does not change size when the slot arrives. */
+.intro__stamp .num { display: inline-block; min-width: 11ch; text-align: left; }
+@keyframes intro-teeth { from { opacity: 0; } to { opacity: 1; } }
+@keyframes intro-end { to { visibility: hidden; } }
+@keyframes intro-top { to { transform: translateY(calc(-100% - 20px)); } }
+@keyframes intro-bottom { to { transform: translateY(calc(100% + 20px)); } }
+@keyframes intro-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes intro-line-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes intro-in { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: none; } }
+@keyframes intro-lock { 0% { transform: none; } 35% { transform: scale(1.05) rotate(-2deg); } 70% { transform: scale(0.98) rotate(1deg); } 100% { transform: none; } }
+@keyframes intro-settle { from { transform: rotate(-70deg); } to { transform: rotate(0deg); } }
+@keyframes intro-stamp { from { opacity: 0; transform: rotate(-3deg) scale(1.35); } to { opacity: 1; transform: rotate(-3deg) scale(1); } }
+@keyframes intro-stamp-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes intro-travel {
+  0% { transform: none; opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(var(--to-x, 0px), var(--to-y, 0px)) scale(var(--to-s, 0.5)); opacity: 0; }
+}
+/* A press, key, wheel or scroll skips to a short exit. */
+.intro[data-skip] { animation: intro-end 10ms steps(1, start) 320ms forwards; }
+.intro[data-skip] .intro__half--top { animation: intro-top 300ms var(--ease-stamp) both; }
+.intro[data-skip] .intro__half--bottom { animation: intro-bottom 300ms var(--ease-stamp) both; }
+.intro[data-skip] .ruler-edge { animation: intro-teeth 100ms linear both; }
+.intro[data-skip] .intro__stage { animation: intro-stamp-out 220ms linear both; }
+
+/* The headline: each word is stamped in with a small drop and settle. Transform only, so the words are readable from the first paint. */
+.stamp-w { display: inline-block; transform-origin: 0 100%; }
+html[data-intro] .stamp-w { animation: stamp-in 460ms var(--ease-stamp) calc(var(--i, 0) * 45ms) both; }
+html[data-intro="lock"]:not([data-intro-split]) .stamp-w { animation-play-state: paused; }
+@keyframes stamp-in { from { transform: translateY(0.28em) scale(1.06); } to { transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .intro { display: none !important; }
+  html[data-intro] .stamp-w { animation: none !important; }
+}

@@ -3,21 +3,11 @@
 import { useEffect, useRef } from "react";
 import { useHomeReading } from "./HomeData";
 import { formatInt } from "@/lib/view";
+import { DIAL_CX, DIAL_CY, DIAL_TICKS } from "@/lib/dial";
 
-const CX = 300;
-const CY = 300;
-
-/** Tick marks around the outer ring: a long tick every 30 degrees, a medium one every 10, a short one every 2. */
-const TICKS = Array.from({ length: 180 }, (_, i) => {
-  const deg = i * 2;
-  const long = deg % 30 === 0;
-  const mid = deg % 10 === 0;
-  const r1 = 268;
-  const r2 = long ? 244 : mid ? 253 : 260;
-  const a = (deg - 90) * (Math.PI / 180);
-  const f = (n: number) => n.toFixed(2);
-  return { d: `M${f(CX + r1 * Math.cos(a))} ${f(CY + r1 * Math.sin(a))}L${f(CX + r2 * Math.cos(a))} ${f(CY + r2 * Math.sin(a))}`, long };
-});
+const CX = DIAL_CX;
+const CY = DIAL_CY;
+const TICKS = DIAL_TICKS;
 
 /**
  * The hero picture: a survey disc is aimed at by a measuring line, locks, and is stamped with the slot it was read at.

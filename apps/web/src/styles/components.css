@@ -393,7 +393,11 @@ html:has(dialog[open]) { overflow: hidden; }
   --dur-sheet: 0ms;
   --dur-measure: 0ms;
 }
-.motion-root[data-motion="still"] *, .motion-root[data-motion="still"] *::before, .motion-root[data-motion="still"] *::after {
+/* The opening sequence and the stamped headline are excluded: the inline gate script has already decided that motion is allowed,
+   and they must run from the first paint, before the page has scripts and has switched from "still" to "full". */
+.motion-root[data-motion="still"] *:not(.intro, .intro *, .stamp-w),
+.motion-root[data-motion="still"] *:not(.intro, .intro *, .stamp-w)::before,
+.motion-root[data-motion="still"] *:not(.intro, .intro *, .stamp-w)::after {
   animation-name: none !important;
   transition-duration: 0ms !important;
 }

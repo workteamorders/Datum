@@ -161,6 +161,11 @@ test.describe("formula lens", () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
     await expect(page.locator(".formula-lens")).toHaveCount(1);
+    await page.evaluate(() => document.fonts.ready);
+    // While the headline words are being stamped in they sit a little low and cover the top edge of the paragraph, so wait for them to settle.
+    await page.evaluate(() =>
+      Promise.all(document.getAnimations().filter((a) => (a.effect as KeyframeEffect | null)?.target?.classList.contains("stamp-w")).map((a) => a.finished)),
+    );
     const button = await page.getByRole("button", { name: "Look up" }).boundingBox();
     await page.mouse.move(button!.x + 10, button!.y + 10);
     await expect.poll(() => page.locator(".formula-lens").getAttribute("data-strength")).toBe("0.00");
