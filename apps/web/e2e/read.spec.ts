@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { claimMintTag } from "@datum/protocol";
-import { BONK, BROKEN, MISSING, USDC, mock } from "./helpers";
+import { BONK, BROKEN, MISSING, PYUSD, USDC, mock } from "./helpers";
 
 test.beforeEach(async ({ page }) => mock(page, "clear"));
 
@@ -204,3 +204,10 @@ for (const [name, path] of [["token", `/t?m=${USDC}`], ["home", "/"]] as const) 
     expect(r.violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
   });
 }
+
+test("a token address is shown exactly as it is, never in capitals", async ({ page }) => {
+  await page.goto(`/t?m=${PYUSD}&motion=off`);
+  const mint = page.locator("h1.tokenhead__mint");
+  await expect(mint).toHaveText(PYUSD);
+  await expect(mint).toHaveCSS("text-transform", "none");
+});

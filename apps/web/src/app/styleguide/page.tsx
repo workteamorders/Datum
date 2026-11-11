@@ -147,10 +147,10 @@ export default function Styleguide() {
 
       <section className="sg-section" id="type">
         <h2>Type</h2>
-        <p className="lede">One family. Chivo for display and text, Chivo Mono for slots, amounts and addresses. Self-hosted.</p>
+        <p className="lede">Three faces, all self-hosted. Big Shoulders Display for headlines (upper case), Chivo for text, Chivo Mono for slots, amounts and addresses. Addresses are never put in upper case.</p>
         <div className="sg-type">
           <p className="display">3 of 4 published claims are true now.</p>
-          <h2>Heading 2, Chivo 800</h2>
+          <h2>Heading 2, Big Shoulders Display 800</h2>
           <h3>Heading 3, Chivo 800</h3>
           <p>
             Body text is Chivo 400 at 16 px with a line height of 1.5. Datum checks claims against the chain as it is now,
@@ -159,6 +159,18 @@ export default function Styleguide() {
           <p className="mono">7p9vKmJgcGiFsPEEoPvVevREc4MGsKRVTh4n7FJPLwCm</p>
           <p className="mono num">1,000,000,000.000000 · slot 467,813,648</p>
           <p className="caption">Caption, 13 px. Tick labels are 12 px and appear on rulers only.</p>
+        </div>
+      </section>
+
+      <section className="sg-section" id="night">
+        <h2>Night band and ruler edge</h2>
+        <p className="lede">Header, footer, hero and Reading 04 sit on a night surface. Every component re-themes through the same tokens. A band ends in a ruler edge.</p>
+        <div className="on-night sg-night">
+          <p className="caps">Reading 04</p>
+          <h2>What this does not tell you</h2>
+          <p>Body text on night. <a href="#night">A link on night</a>.</p>
+          <p><button type="button" className="btn btn--primary">Primary on night</button> <button type="button" className="btn">Plain on night</button></p>
+          <span className="ruler-edge" aria-hidden="true" />
         </div>
       </section>
 

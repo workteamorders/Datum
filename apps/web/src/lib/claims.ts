@@ -78,6 +78,8 @@ async function readPage(rpc: RpcClient, address: string, tags: TagResolver, befo
         unreadable++;
         continue;
       }
+      // Give the page a turn between transactions so a long page of claims never freezes typing or scrolling.
+      await new Promise<void>((done) => setTimeout(done, 0));
       const parsed = await parseClaimTransaction(item.tx, item.r.signature, tags);
       if (!parsed.ok || !accept(parsed.claim)) {
         malformed++;

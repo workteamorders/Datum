@@ -50,7 +50,7 @@ function MobileMenu() {
 
 export function SiteHeader() {
   return (
-    <header className="site-header">
+    <header className="site-header on-night">
       <div className="wrap">
         <Link href="/" className="brand" aria-label="Datum, home">
           <Disc size={32} />
@@ -68,7 +68,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="site-footer">
+    <footer className="site-footer on-night">
       <div className="wrap">
         <p>Datum reads public chain data in your browser. It never holds keys and never sends a transaction you did not sign.</p>
         <MotionControl />

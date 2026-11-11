@@ -5,6 +5,7 @@ import "@/styles/fonts.css";
 import "@/styles/tokens.css";
 import "@/styles/base.css";
 import "@/styles/components.css";
+import "@/styles/editorial.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.DATUM_SITE_URL ?? "http://localhost:3000"),
@@ -25,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* The fonts used above the fold start loading with the HTML. */}
         <link rel="preload" href="/fonts/chivo-latin-400-normal.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/chivo-latin-800-normal.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/chivo-latin-900-normal.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/big-shoulders-display-latin-900-normal.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body>
         <MotionRoot>

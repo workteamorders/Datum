@@ -12,6 +12,9 @@
  *   on the set-in surface (cured): ink 11.6, ink-dim 5.3, accent 4.8, oxide 5.3
  *   control edge on concrete 4.6 : 1 (non-text, needs 3 : 1)
  * --cast is decoration only and never carries text.
+ * Night surfaces (measured): concrete on night 14.1 : 1, night-dim on night 8.3 : 1,
+ *   brass on night 8.2 : 1, night on brass 8.2 : 1, concrete on night-2 12.6 : 1,
+ *   night-dim on night-2 7.5 : 1, brass on night-2 7.4 : 1.
  */
 :root {
   color-scheme: light;
@@ -31,6 +34,12 @@
   --palette-sunk-light: #b8bcb5;
   --palette-field: #38362f;
   --palette-field-rule: #6b675a;
+  /* night surfaces (header, footer, hero, Reading 04) */
+  --palette-night: #161715;
+  --palette-night-2: #20211f;
+  --palette-night-line: #3d3f3a;
+  --palette-night-dim: #adb2aa;
+  --palette-brass: #d9a56c;
 
   /* ---- semantic colour ---- */
   --color-bg: var(--palette-concrete);
@@ -50,7 +59,8 @@
   --color-focus: var(--palette-bronze);
 
   /* ---- type ---- */
-  --font-display: "Chivo", system-ui, sans-serif;
+  --font-display: "Big Shoulders Display", "Chivo", system-ui, sans-serif;
+  --font-head: "Chivo", system-ui, sans-serif;
   --font-body: "Chivo", system-ui, sans-serif;
   --font-mono: "Chivo Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
@@ -68,11 +78,16 @@
   --text-2xl: 1.75rem; /* 28 */
   --text-3xl: 2.25rem; /* 36 */
   --text-4xl: 2.75rem; /* 44 */
+  --text-hero: clamp(3.25rem, 9.5vw, 7rem); /* hero headline */
+  --text-section: clamp(2.5rem, 5.5vw, 4rem); /* Reading titles */
+  --text-figure: clamp(2.25rem, 4.5vw, 3.5rem); /* stat figures */
 
   --leading-tight: 1.1;
   --leading-snug: 1.25;
   --leading-body: 1.5;
   --track-display: -0.015em;
+  --track-stamp: 0.01em;
+  --leading-display: 0.96;
   --track-caps: 0.08em;
 
   /* ---- space (4 px base) ---- */
@@ -111,6 +126,28 @@
   :root {
     --gutter: var(--space-6);
   }
+}
+
+/* Re-themes every component inside it: header, footer, hero and Reading 04. */
+.on-night {
+  --color-bg: var(--palette-night);
+  --color-surface: var(--palette-night-2);
+  --color-ink: var(--palette-concrete);
+  --color-ink-dim: var(--palette-night-dim);
+  --color-accent: var(--palette-brass);
+  --color-on-accent: var(--palette-night);
+  --color-line: var(--palette-night-line);
+  --color-edge: var(--palette-night-dim);
+  --color-faded: var(--palette-night-dim);
+  --color-focus: var(--palette-brass);
+  --color-disc: var(--palette-brass);
+  --color-disc-face: var(--palette-brass);
+  --color-disc-edge: var(--palette-concrete);
+  --fx-neutral: var(--palette-night-line);
+  --fx-shade: var(--palette-night-line);
+  color-scheme: dark;
+  background: var(--color-bg);
+  color: var(--color-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {
