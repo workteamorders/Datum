@@ -64,6 +64,7 @@ export function HeroField() {
         </g>
         <g className="hero-field__dial">
           <g className="hero-field__spin">
+            <path className="hf-index" d={`M${CX} 30L${CX - 9} 10H${CX + 9}Z`} />
             <path className="hf-ticks" d={TICKS.filter((t) => !t.long).map((t) => t.d).join("")} />
             <path className="hf-ticks hf-ticks--long" d={TICKS.filter((t) => t.long).map((t) => t.d).join("")} />
           </g>

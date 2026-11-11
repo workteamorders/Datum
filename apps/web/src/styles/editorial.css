@@ -78,15 +78,16 @@ main:has(.home) > .wrap { max-width: none; padding-inline: 0; }
 }
 .hero-field__stamp-label { color: var(--color-ink); }
 /* Motion. One 10 s measuring loop (line in, lock, stamp, fade out) plus a slow dial. Still mode shows the finished picture. */
+.hf-index { fill: var(--color-accent); }
 .hf-ring--dash { stroke-dasharray: 3 11; stroke: var(--color-ink-dim); stroke-width: 1.5; }
 .hero-field__dial, .hero-field__spin, .hero-field__counter, .hero-field__lean, .hero-field__aim { transform-box: view-box; transform-origin: 50% 50%; }
 .hero-field__lean { transform: translate(calc(var(--px, 0) * 7px), calc(var(--py, 0) * 7px)); transition: transform 240ms ease-out; }
 .hero-field__aim { transform: translate(calc(var(--px, 0) * 12px), calc(var(--py, 0) * 12px)); transition: transform 160ms ease-out; }
 .hero-field__dial { transform: translate(calc(var(--px, 0) * -5px), calc(var(--py, 0) * -5px)); transition: transform 320ms ease-out; }
 [data-motion="full"] .hero-field__dial { animation: hf-fade 600ms linear both; }
-[data-motion="full"] .hero-field__spin { animation: hf-spin 150s linear infinite; }
+[data-motion="full"] .hero-field__spin { animation: hf-spin 36s linear infinite; }
 [data-motion="full"] .hero-field__counter { animation: hf-fade 600ms linear both; }
-[data-motion="full"] .hero-field__counter .hf-ring { transform-box: view-box; transform-origin: 50% 50%; animation: hf-spin 110s linear infinite reverse; }
+[data-motion="full"] .hero-field__counter .hf-ring { transform-box: view-box; transform-origin: 50% 50%; animation: hf-spin 24s linear infinite reverse; }
 [data-motion="full"] .hero-field__rings { animation: hf-fade 600ms linear both; }
 [data-motion="full"] .hero-field__line { animation: hf-measure-line 10s var(--ease-stamp) 200ms infinite both; }
 [data-motion="full"] .hero-field__cap { animation: hf-measure-cap 10s linear 200ms infinite both; }
