@@ -50,6 +50,7 @@ test("a full publish: fee shown, wallet signs, signed bytes checked, sent once, 
   await page.getByLabel(/I understand this claim will be public/).check();
   await go.click();
   await expect(page.getByText(/Confirmed in slot/)).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator(".confirmed-art")).toBeVisible();
   expect(await sent(page)).toHaveLength(1);
   await page.getByRole("link", { name: "Open the token page" }).click();
   await expect(page.locator(".verdict")).toBeVisible();
@@ -113,6 +114,7 @@ test("a transaction that is sent but not yet seen says so and does not invite a 
   await expect(page.getByRole("button", { name: "Check again" })).toBeVisible();
   expect(await sent(page)).toHaveLength(1);
   expect(WALLET_ADDRESS).toBeTruthy();
+  await expect(page.locator(".confirmed-art")).toHaveCount(0);
 });
 
 test("axe finds nothing on the publish page", async ({ page }) => {

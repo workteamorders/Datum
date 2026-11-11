@@ -305,3 +305,13 @@ next 16.4.6, react 19.3.1, @solana/kit 8.6.0, @solana-program/token 0.18.0, @sol
 - Apakah akun metadata Metaplex fungible bisa ditutup dan dibuat ulang; apakah update authority bisa dipindah saat immutable.
 - Siapa yang berwenang pada `confidentialMint` (Token-2022 `ConfidentialMintBurn`). Akibatnya `supply_max` menjadi "cannot_check" bila ekstensi itu ada.
 - Syarat komersial Cloudflare secara rinci, nama, dan domain.
+
+### Datum Live
+
+- **D-062.** Benchmark tetap bertema terang sesuai token yang ada. Motion Reduced menampilkan bidang statis, Off menyembunyikannya. Preferensi sistem, Save-Data, dan tab tersembunyi menghentikan gerak. Pilihan UI disimpan dengan wrapper penyimpanan yang sudah ada.
+- **D-063.** Watch opsional dilewati. Relay memakai default 120 permintaan per IP per menit, sedangkan pembacaan riwayat bisa memindai beberapa halaman. Pembacaan ulang Token dan Recent tetap dimulai pengguna.
+- **D-064.** Pembacaan ulang Token mempertahankan bacaan yang sedang ditampilkan selama request berlangsung. Penanda perubahan hanya muncul untuk pernyataan yang sudah ditampilkan dan hasilnya berbeda. Cap konfirmasi Publish hanya mengikuti cabang transaksi terkonfirmasi yang sudah ada.
+- **D-065.** Generator lokal menurunkan palet dari token yang sudah ada. Tanda alamat hanya berfungsi sebagai penanda visual; perbandingan identitas tetap memakai alamat lengkap. Teks Risk and terms tidak diubah.
+- **D-066.** Playwright menolak memakai server yang sudah berjalan. Variabel `PORT` memungkinkan mock Datum memakai port kosong ketika port standar digunakan proyek lain.
+- **D-067.** Recent menyediakan tempat untuk hasil, slot, dan relasi begitu memo tersedia. Teks pernyataan dapat diambil dari memo sebelum snapshot selesai; hasil tetap menunggu pembacaan. Bidang canvas menggunakan palet dekorasi tersendiri.
+- **D-068.** `/styleguide` tetap memakai `noindex` dan rute yang tidak ada tetap menjawab HTTP 404. Kartu sosial mengambil origin publik dari `DATUM_SITE_URL` saat build.

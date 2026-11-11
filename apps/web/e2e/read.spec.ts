@@ -163,8 +163,8 @@ test("home shows a labelled example and never presents it as a real claim", asyn
   await expect(ex).toContainText("Invented for this page");
 });
 
-test("spec page: code blocks can be copied", async ({ page, context }) => {
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "http://localhost:4173" });
+test("spec page: code blocks can be copied", async ({ page, context, baseURL }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseURL });
   await page.goto("/spec");
   await expect(page.getByRole("button", { name: "Copy code" }).first()).toBeVisible();
   const copy = page.locator(".codeblock__copy").first(); // the label changes after the click, so do not find it by label

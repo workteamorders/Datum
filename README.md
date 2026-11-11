@@ -25,3 +25,12 @@ Example environment values live in `.env.example`. Never commit `.env*` or `.dev
 - `apps/web/e2e`: mock chain, mock server and Playwright tests.
 - `packages/protocol`: the pure protocol library (memo schema, addresses, decoders, evaluator, stability, signer relation).
 - `docs`: `SPEC.md` (protocol), `DECISIONS.md` (verified facts and decisions), `CONCEPTS.md` (visual directions), `STAGE2-REGISTRY-SPEC.md` (optional on-chain registry, specification only), `screens/` (review screenshots).
+
+## Datum artwork and motion
+
+```sh
+node apps/web/scripts/make-art.mjs       # Regenerate the checked-in artwork
+node apps/web/scripts/check-contrast.mjs
+```
+
+Set `DATUM_SITE_URL` to the public origin when building for deployment so social previews resolve to that origin. The header, mobile menu, and footer offer Full, Reduced, and Off. Add `?motion=off` to a route for a still capture or `?motion=debug` for field counters. See [the artwork inventory](docs/ASSETS.md).

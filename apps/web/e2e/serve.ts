@@ -3,11 +3,11 @@ import { createServer } from "node:http";
 import { existsSync, createReadStream, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { createGzip } from "node:zlib";
-import { seededChain, type MockChain } from "./mock-chain";
+import { seededChain, USDC, OTHER_WALLET, type MockChain } from "./mock-chain";
 
-const ROOT = join(process.cwd(), "out");
+const ROOT = process.env.DATUM_STATIC_ROOT ?? join(process.cwd(), "out");
 const PORT = Number(process.env.PORT ?? 4173);
-const TYPES: Record<string, string> = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "text/javascript", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".txt": "text/plain", ".json": "application/json", ".ico": "image/x-icon" };
+const TYPES: Record<string, string> = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "text/javascript", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".txt": "text/plain", ".json": "application/json", ".ico": "image/x-icon", ".png": "image/png" };
 
 let chain: MockChain;
 let pending: Promise<MockChain>;
@@ -35,6 +35,14 @@ const server = createServer(async (req, res) => {
   if (url.pathname.startsWith("/__mock/")) {
     await ready;
     const [, , action, arg] = url.pathname.split("/");
+    if (action === "change-reading") {
+      const mint = chain.accounts.get(USDC);
+      if (mint) mint.data[44] = 7;
+      chain.slot++;
+    }
+    if (action === "add-claim") {
+      await chain.addClaim({ mint: USDC, publisher: OTHER_WALLET, predicates: [{ k: "decimals_eq", v: "6" }], slot: ++chain.slot });
+    }
     if (action === "simerror") chain.simError = arg && arg !== "none" ? arg : null;
     if (action === "hold") chain.holdNext = true;
     if (action === "blocked") blocked = arg === "1";

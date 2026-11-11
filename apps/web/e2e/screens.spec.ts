@@ -1,20 +1,21 @@
-import { test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { BONK, BROKEN, PYUSD, USDC, installFakeWallet, mock } from "./helpers";
 
 // Screenshots for docs/screens. Run with SCREENS=1 (they are not part of the normal run).
 test.skip(!process.env.SCREENS, "set SCREENS=1");
-const OUT = process.env.SCREENS_OUT ?? "../../docs/screens";
+const OUT = process.env.SCREENS_OUT ?? "../../docs/screens/live";
 const widths = [360, 768, 1440];
+
+function open(page: Page, path: string) {
+  return page.goto(`${path}${path.includes("?") ? "&" : "?"}motion=off`);
+}
+
+test.beforeEach(async ({ page }) => page.clock.setFixedTime(new Date("2026-11-11T08:00:00Z")));
 
 async function shoot(page: Page, name: string, w: number) {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(250);
-  const sw = await page.evaluate(() => document.documentElement.scrollWidth);
-  if (sw > w) {
-    console.log(`OVERFLOW ${name} ${w}: ${sw}`);
-    const bad = await page.evaluate((vw) => Array.from(document.querySelectorAll("main *")).filter((e) => e.getBoundingClientRect().right > vw + 1).slice(0, 8).map((e) => `${e.tagName}.${(e as HTMLElement).className} ${Math.round(e.getBoundingClientRect().right)}`), w);
-    console.log("  offenders:", bad.join(" | "));
-  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth), name).toBeLessThanOrEqual(w);
   await page.screenshot({ path: `${OUT}/${name}-${w}.png`, fullPage: true });
   if (w === 1440) {
     const style = await page.addStyleTag({ content: "html{filter:grayscale(1)}" });
@@ -35,26 +36,27 @@ for (const w of widths) {
       ["spec", "/spec"],
       ["methodology", "/methodology"],
       ["terms", "/terms"],
+      ["styleguide", "/styleguide"],
       ["notfound", "/nothing-here"],
       ["publish-empty", `/publish?m=${BONK}`],
     ];
     for (const [name, path, wait] of plain) {
       test(`${name}`, async ({ page }) => {
-        await page.goto(path);
+        await open(page, path);
         if (wait) await page.waitForSelector(wait);
         await page.waitForLoadState("networkidle");
         await shoot(page, name, w);
       });
     }
     test("token with other wallets open", async ({ page }) => {
-      await page.goto(`/t?m=${USDC}`);
+      await open(page, `/t?m=${USDC}`);
       await page.waitForSelector(".verdict");
       await shoot(page, "token-usdc-collapsed", w);
       await page.locator("details.others > summary").click();
       await shoot(page, "token-usdc-others-open", w);
     });
     test("since your last visit", async ({ page }) => {
-      await page.goto(`/t?m=${USDC}`);
+      await open(page, `/t?m=${USDC}`);
       await page.waitForSelector(".verdict");
       await page.evaluate((m) => {
         const k = `datum.visit.v0.mainnet.${m}`;
@@ -69,7 +71,7 @@ for (const w of widths) {
     });
     test("publish steps", async ({ page }) => {
       await installFakeWallet(page);
-      await page.goto(`/publish?m=${USDC}`);
+      await open(page, `/publish?m=${USDC}`);
       await page.getByLabel("Mint authority is revoked").check();
       await page.getByLabel("Decimals equal a value").check();
       await page.getByLabel("Decimals equal a value: value").fill("6");
@@ -97,13 +99,13 @@ test.describe("phone sheets", () => {
   test.use({ viewport: { width: 360, height: 740 } });
   test.beforeEach(async ({ page }) => mock(page, "clear"));
   test("menu and evidence", async ({ page }) => {
-    await page.goto("/");
+    await open(page, "/");
     await page.getByRole("button", { name: "Menu" }).click();
     await page.getByRole("dialog", { name: "Menu" }).waitFor();
     await page.waitForTimeout(400);
     await page.screenshot({ path: `${OUT}/sheet-menu-360.png` });
     await page.keyboard.press("Escape");
-    await page.goto(`/t?m=${USDC}`);
+    await open(page, `/t?m=${USDC}`);
     await page.waitForSelector(".verdict");
     await page.locator(".claim").first().getByRole("button", { name: "Show evidence" }).click();
     await page.getByRole("dialog", { name: "Evidence" }).waitFor();
