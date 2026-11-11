@@ -1,9 +1,11 @@
+import { StateArt } from "@/components/fx/BenchmarkArt";
 import Link from "next/link";
 import { MintLookup } from "@/components/MintLookup";
 
 export default function NotFound() {
   return (
     <div className="stack">
+      <StateArt kind="not-found" />
       <h1>Page not found</h1>
       <p>There is nothing at this address. Look up a token instead.</p>
       <MintLookup />

@@ -1,9 +1,11 @@
+import type { CSSProperties } from "react";
+
 const TITLES = ["Token and statements", "Wallet and check", "Review and sign"] as const;
 
 /** Where the person is in the three publishing steps. The current step is said in words, not only marked. */
 export function StepProgress({ stage }: { stage: 1 | 2 | 3 }) {
   return (
-    <ol className="progress" aria-label="Publishing progress">
+    <ol className="progress" aria-label="Publishing progress" style={{ "--step-fill": stage / 3 } as CSSProperties}>
       {TITLES.map((t, i) => {
         const n = i + 1;
         const state = n < stage ? "done" : n === stage ? "current" : "todo";

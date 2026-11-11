@@ -7,14 +7,20 @@ export default function Home() {
   return (
     <div className="stack home">
       <section className="hero stack" aria-labelledby="home-h">
-        <p className="caps">Datum · Solana</p>
-        <h1 id="home-h">What is true about this token, right now?</h1>
-        <p className="lede">
-          Paste a token address. Datum reads the chain in your browser and checks each claim wallets have published about it, then shows what holds now and what could still change.
-        </p>
-        <MintLookup autoFocus />
+        <div className="hero__copy stack">
+          <p className="caps">Datum · Solana</p>
+          <h1 id="home-h">What is true about this token, right now?</h1>
+          <p className="lede">
+            Paste a token address. Datum reads the chain in your browser and checks each claim wallets have published about it, then shows what holds now and what could still change.
+          </p>
+          <MintLookup autoFocus />
+        </div>
+        <div className="hero__field" aria-hidden="true">
+          <img src="/art/disc-double-ring.svg" alt="" width="112" height="112" />
+        </div>
       </section>
 
+      <div className="measure-tape" aria-hidden="true"><span /></div>
       <ExampleClaim />
 
       <section aria-labelledby="how-h" className="stack">

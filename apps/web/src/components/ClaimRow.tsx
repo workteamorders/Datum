@@ -12,12 +12,12 @@ import type { ClaimView } from "./types";
 import type { Cluster } from "@/lib/cluster";
 
 /** One claim: result, statement, relation of the publisher, stability, and an evidence drawer. */
-export function ClaimRow({ claim, defaultOpen = false, showRelation = true, cluster }: { claim: ClaimView; defaultOpen?: boolean; showRelation?: boolean; cluster?: Cluster }) {
+export function ClaimRow({ claim, defaultOpen = false, showRelation = true, cluster, changed }: { claim: ClaimView; defaultOpen?: boolean; showRelation?: boolean; cluster?: Cluster; changed?: number }) {
   const [open, setOpen] = useState(defaultOpen);
   const drawerId = useId();
   const narrow = useNarrow();
   return (
-    <li className="claim" data-status={claim.status}>
+    <li className="claim" data-status={claim.status} data-changed={changed !== undefined}>
       <div className="claim__mark">
         <StatusMark status={claim.status} />
       </div>
@@ -29,6 +29,7 @@ export function ClaimRow({ claim, defaultOpen = false, showRelation = true, clus
         <p className="claim__status-word">
           {STATUS_LABEL[claim.status]} <StabilityTag stability={claim.stability} reason={claim.stabilityReason} />
         </p>
+        {changed !== undefined && <span key={changed} className="claim__changed">Changed just now</span>}
         {showRelation && <SignerRelationLine publisher={claim.publisher} relations={claim.relations} />}
         <button
           type="button"

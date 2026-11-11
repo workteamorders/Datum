@@ -1,6 +1,9 @@
 "use client";
 
+import { StateArt } from "@/components/fx/BenchmarkArt";
 import Link from "next/link";
+import { Confirmed } from "@/components/fx/Confirmed";
+import { PointerAccent } from "@/components/fx/PointerAccent";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { Wallet, WalletAccount } from "@wallet-standard/base";
@@ -269,7 +272,8 @@ export function PublishPage() {
   const busy = phase.kind === "preparing" || phase.kind === "working";
 
   return (
-    <div className="stack publish">
+    <div className="stack publish pointer-area">
+      <PointerAccent />
       <header className="stack">
         <p className="caps">Publish</p>
         <h1>Publish a claim</h1>
@@ -371,6 +375,7 @@ export function PublishPage() {
               <>
                 {wallets.length === 0 ? (
                   <div className="notice" role="status">
+                    <StateArt kind="no-wallet" />
                     <p>No Solana wallet was found in this browser.</p>
                     <p className="caption">Datum works with wallets that follow the Wallet Standard. Install or unlock one, then reload this page. Datum never asks for a seed phrase or a private key.</p>
                   </div>
@@ -502,6 +507,7 @@ export function PublishPage() {
             )}
             {phase.kind === "sent" && (
               <div className="stack">
+                {phase.landing.state === "confirmed" && <Confirmed key={phase.signature} />}
                 <p>
                   Signature <code className="mono">{phase.signature}</code>
                 </p>

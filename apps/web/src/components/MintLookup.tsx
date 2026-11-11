@@ -1,5 +1,6 @@
 "use client";
 
+import { PointerAccent } from "./fx/PointerAccent";
 import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isPubkey } from "@datum/protocol";
@@ -23,7 +24,8 @@ export function MintLookup({ initial = "", autoFocus = false }: { initial?: stri
   }
 
   return (
-    <form className="lookup" onSubmit={submit} noValidate>
+    <form className="lookup pointer-area" onSubmit={submit} noValidate>
+      <PointerAccent />
       <label className="label" htmlFor={id}>Token address</label>
       <div className="lookup__row">
         <input

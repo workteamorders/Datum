@@ -4,12 +4,12 @@ import { describePredicate, formulaOf } from "./predicates";
 import { rulerProps } from "./readings";
 import type { ClaimGroup } from "./token-view";
 
-const MINT = "DatumExamp1eMintA11111111111111111111111111";
+export const EXAMPLE_MINT = "DatumExamp1eMintA11111111111111111111111111";
 const PUBLISHER = "7p9vKmJgcGiFsPEEoPvVevREc4MGsKRVTh4n7FJPLwCm";
 const SIGNATURE = "ExampLe1SignaTure1111111111111111111111111111111111111111111111111111111111111111";
-const memo = buildMemo(MINT, [{ k: "mint_authority_none" }, { k: "supply_max", v: "1000000000" }], "Launch terms");
+const memo = buildMemo(EXAMPLE_MINT, [{ k: "mint_authority_none" }, { k: "supply_max", v: "1000000000" }], "Launch terms");
 
-const base = { publisher: PUBLISHER, claimSlot: 467_800_112, signature: SIGNATURE, memo, label: "Launch terms", measuredSlot: 467_813_648, measuredAge: "12 s ago", relations: ["mint_authority" as const], accounts: [{ name: "Mint account", address: MINT }] };
+const base = { publisher: PUBLISHER, claimSlot: 467_800_112, signature: SIGNATURE, memo, label: "Launch terms", measuredSlot: 467_813_648, measuredAge: "12 s ago", relations: ["mint_authority" as const], accounts: [{ name: "Mint account", address: EXAMPLE_MINT }] };
 
 export const EXAMPLE_GROUP: ClaimGroup = {
   signature: SIGNATURE,

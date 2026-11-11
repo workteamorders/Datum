@@ -1,5 +1,6 @@
 "use client";
 
+import { AddressMark, StateArt } from "@/components/fx/BenchmarkArt";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -57,6 +58,10 @@ function Token({ mint }: { mint: string }) {
   const [clusterKnown, setClusterKnown] = useState(false);
   const [more, setMore] = useState(false);
   const [moreError, setMoreError] = useState<string | null>(null);
+  const [reading, setReading] = useState(false);
+  const [recentChanges, setRecentChanges] = useState<{ at: number; ids: ReadonlyMap<string, number>; items: Change[] } | null>(null);
+  const compared = useRef(0);
+  const beforeRead = useRef<VisitRecord | null>(null);
   const [round, setRound] = useState(0);
   const now = useNow();
   const alive = useRef(true);
@@ -66,8 +71,6 @@ function Token({ mint }: { mint: string }) {
   useEffect(() => {
     alive.current = true;
     let cancelled = false;
-    setLoad({ state: "loading" });
-    setClaims({ state: "loading" });
     (async () => {
       rpc.call<string>("getGenesisHash")
         .then((h) => !cancelled && (setCluster(clusterFromGenesis(h)), setClusterKnown(true)))
@@ -84,6 +87,7 @@ function Token({ mint }: { mint: string }) {
       if (cancelled) return;
       setLoad(s);
       setClaims(c);
+      setReading(false);
     })();
     return () => {
       cancelled = true;
@@ -116,17 +120,30 @@ function Token({ mint }: { mint: string }) {
   const shownCluster = clusterKnown ? cluster : null;
   const unreadable = claims.state === "ready" ? claims.unreadable : 0;
   useEffect(() => {
-    if (!view || shownCluster === null || shownCluster === "unknown") return;
+    if (!view || reading || shownCluster === null || shownCluster === "unknown") return;
     const rec = recordOf([...view.fromAuthorities, ...view.fromOthers], Date.now());
     if (!baseline.current.taken) {
       baseline.current = { taken: true, prev: loadVisit(shownCluster, mint) };
     }
     const prev = baseline.current.prev;
     if (prev) setSince({ at: prev.at, changes: changesSince(prev, rec) });
+    if (round > compared.current) {
+      compared.current = round;
+      const before = beforeRead.current;
+      if (before) {
+        const items = changesSince(before, rec).filter(({ id }) => before.rows[id] !== undefined);
+        if (items.length) setRecentChanges({ at: rec.at, ids: new Map(items.map(({ id }) => [id, round])), items });
+      }
+    }
     if (unreadable === 0) saveVisit(shownCluster, mint, rec);
-  }, [view, shownCluster, mint, unreadable]);
+  }, [view, shownCluster, mint, unreadable, round, reading]);
 
   const reread = () => {
+    if (reading || more) return;
+    beforeRead.current = view ? recordOf([...view.fromAuthorities, ...view.fromOthers], Date.now()) : null;
+    setRecentChanges(null);
+    setReading(true);
+    setMoreError(null);
     rpc.clear();
     setRound((n) => n + 1);
   };
@@ -136,7 +153,10 @@ function Token({ mint }: { mint: string }) {
       <header className="tokenhead">
         <div className="tokenhead__text">
           <p className="caps">Token</p>
-          <h1 className="tokenhead__mint mono" aria-label={`Token address ${mint}`}>{mint}</h1>
+          <div className="tokenhead__address">
+            <h1 className="tokenhead__mint mono" aria-label={`Token address ${mint}`}>{mint}</h1>
+            <AddressMark address={mint} />
+          </div>
           <p className="chip" data-cluster={cluster}>
             {clusterKnown ? CLUSTER_LABEL[cluster] : "Reading cluster…"}
           </p>
@@ -151,14 +171,15 @@ function Token({ mint }: { mint: string }) {
         )}
       </header>
 
-      {load.state === "loading" && <p role="status" className="dim">Reading the chain…</p>}
+      {load.state === "loading" && <p role="status" className="dim status-slot measure-loading">Reading the chain…</p>}
 
       {load.state === "failed" && (
         <div className="notice" role="alert">
+          <StateArt kind="no-network" />
           <h2>Could not read this token</h2>
           <p>{load.message}</p>
           <p className="caption">This does not mean the token is missing or that any claim is false.</p>
-          <button type="button" className="btn" onClick={reread}>Try again</button>
+          <button type="button" className="btn" onClick={reread} disabled={reading}>Try again</button>
         </div>
       )}
 
@@ -166,6 +187,7 @@ function Token({ mint }: { mint: string }) {
         <>
           {view?.facts ? <FactsPanel facts={view.facts} /> : view ? (
             <div className="notice">
+              <StateArt kind="other-cluster" />
               <h2>On the chain now</h2>
               <p>The mint account could not be read as an SPL Token or Token-2022 mint on this cluster. Claims below will show “Cannot check right now”.</p>
             </div>
@@ -176,7 +198,7 @@ function Token({ mint }: { mint: string }) {
               <h2>Published claims could not be loaded</h2>
               <p>{claims.message}</p>
               <p className="caption">This is not the same as “no claims”. Nothing is shown as true or false until the claims are read.</p>
-              <button type="button" className="btn" onClick={reread}>Try again</button>
+              <button type="button" className="btn" onClick={reread} disabled={reading}>Try again</button>
             </div>
           )}
 
@@ -184,25 +206,26 @@ function Token({ mint }: { mint: string }) {
             <>
               <VerdictStrip counts={view.counts} othersCount={view.othersCount} slot={load.snapshot.slot} ageLabel={ageLabel(load.snapshot.observedAt, now)} />
 
-              {since && (
+              {(since || recentChanges) && (
                 <section aria-labelledby="since-h" className="notice since">
-                  <h2 id="since-h">Since your last visit</h2>
-                  <p className="caption">Last shown in this browser {ageLabel(since.at, now)}. This is kept on this device only.</p>
-                  {since.changes.length === 0 ? (
+                  <h2 id="since-h">{since ? "Since your last visit" : "Since the previous read"}</h2>
+                  {since && <p className="caption">Last shown in this browser {ageLabel(since.at, now)}. This is kept on this device only.</p>}
+                  {!since?.changes.length && !recentChanges?.items.length ? (
                     <p>Nothing changed in the claims shown below.</p>
                   ) : (
                     <ul className="since__list">
-                      {since.changes.map((c) => <li key={c.id}>{c.text}</li>)}
+                      {[...new Map([...(since?.changes ?? []), ...(recentChanges?.items ?? [])].map((c) => [c.id, c])).values()].map((c) => <li key={c.id}>{c.text}</li>)}
                     </ul>
                   )}
                 </section>
               )}
 
+              {view.fromAuthorities.length === 0 && <StateArt kind="no-claims" />}
               {view.fromAuthorities.length > 0 && (
                 <section aria-labelledby="auth-h" className="stack">
                   <h2 id="auth-h">From the token’s authorities</h2>
                   <p className="caption">Wallets that hold an authority over this token right now, or created the pump.fun coin. Read live; authorities can change hands.</p>
-                  {view.fromAuthorities.map((g) => <ClaimGroupCard key={g.signature} group={g} cluster={cluster} />)}
+                  {view.fromAuthorities.map((g) => <ClaimGroupCard key={g.signature} group={g} cluster={cluster} changed={recentChanges && now - recentChanges.at < 30_000 ? recentChanges.ids : undefined} />)}
                 </section>
               )}
 
@@ -213,7 +236,7 @@ function Token({ mint }: { mint: string }) {
                     <p className="notice notice--warn" role="note">
                       Anyone can publish a claim about any token, including a wallet that has nothing to do with it. These wallets are not shown to hold an authority over this token. Read each one as what that wallet says, not as what the token’s creators promise.
                     </p>
-                    {view.fromOthers.map((g) => <ClaimGroupCard key={g.signature} group={g} cluster={cluster} />)}
+                    {view.fromOthers.map((g) => <ClaimGroupCard key={g.signature} group={g} cluster={cluster} changed={recentChanges && now - recentChanges.at < 30_000 ? recentChanges.ids : undefined} />)}
                   </div>
                 </details>
               )}
@@ -222,7 +245,7 @@ function Token({ mint }: { mint: string }) {
                 <details className="superseded">
                   <summary>Superseded claims ({view.superseded.length})</summary>
                   <div className="stack">
-                    {view.superseded.map((g) => <ClaimGroupCard key={g.signature} group={g} cluster={cluster} />)}
+                    {view.superseded.map((g) => <ClaimGroupCard key={g.signature} group={g} cluster={cluster} changed={recentChanges && now - recentChanges.at < 30_000 ? recentChanges.ids : undefined} />)}
                   </div>
                 </details>
               )}
@@ -236,14 +259,15 @@ function Token({ mint }: { mint: string }) {
               {moreError && <p className="field-error" role="alert">{moreError}</p>}
               {claims.next && (
                 <p>
-                  <button type="button" className="btn" onClick={loadMore} disabled={more}>{more ? "Loading…" : "Load more claims"}</button>
+                  <button type="button" className="btn" onClick={loadMore} disabled={more || reading}>{more ? "Loading…" : "Load more claims"}</button>
                 </p>
               )}
             </>
           )}
 
           <p className="actions">
-            <button type="button" className="btn" onClick={reread}>Read again</button>
+            <button type="button" className="btn" onClick={reread} disabled={reading || more}>Read again</button>
+            <span className={reading ? "caption measure-loading" : "sr-only"} role="status">{reading ? "Checking against the chain…" : ""}</span>
             <Link className="btn btn--primary" href={`/publish?m=${encodeURIComponent(mint)}`}>Publish a claim about {shortAddress(mint)}</Link>
           </p>
         </>

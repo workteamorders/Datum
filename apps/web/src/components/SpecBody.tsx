@@ -8,6 +8,9 @@ export function SpecBody({ html }: { html: string }) {
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
+    root.querySelectorAll("pre, table").forEach((region) => {
+      region.setAttribute("tabindex", "0");
+    });
     root.querySelectorAll("pre").forEach((pre) => {
       if (pre.parentElement?.classList.contains("codeblock")) return;
       const wrap = document.createElement("div");

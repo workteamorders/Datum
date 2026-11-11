@@ -1,4 +1,6 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { useEffect, useRef, type CSSProperties } from "react";
 
 export type RulerProps = {
   /** Value of the claim's limit. */
@@ -39,8 +41,20 @@ export function Ruler({ limit, max, now, limitLabel, nowLabel, ticks, descriptio
   const state = now === null ? "none" : now > limit ? "over" : "within";
   const pl = pct(limit, max);
   const pn = now === null ? 0 : pct(now, max);
+  const figure = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const node = figure.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      node.dataset.inView = "true";
+      observer.disconnect();
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
   return (
-    <figure className="ruler" data-state={state} role="img" aria-label={description}>
+    <figure ref={figure} className="ruler" data-state={state} role="img" aria-label={description}>
       <div className="ruler__limit-label" style={anchor(pl, "12px")} aria-hidden="true">
         {limitLabel}
       </div>
@@ -56,8 +70,14 @@ export function Ruler({ limit, max, now, limitLabel, nowLabel, ticks, descriptio
         ))}
         {state === "over" && <span className="ruler__excess" style={{ left: `${pl}%`, width: `${pn - pl}%` }} />}
         <span className="ruler__disc" style={{ left: `${pl}%` }} />
-        {now !== null && <span className="ruler__dot" style={{ left: `${pn}%` }} />}
-        {now !== null && <span className="ruler__leader" style={{ left: `${pn}%` }} />}
+        {now !== null && (
+          <span className="ruler__motion">
+            <span className="ruler__marker" style={{ "--reading-position": pn } as CSSProperties}>
+              <span className="ruler__dot" />
+              <span className="ruler__leader" />
+            </span>
+          </span>
+        )}
       </div>
 
       <div className="ruler__scale" aria-hidden="true">

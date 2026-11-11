@@ -1,3 +1,7 @@
+import { DISC_ART, REGISTRATION_ART, SEAL_ART, STATE_ART } from "@/art/benchmark";
+import { AddressMark, ArtSeal, StateArt } from "@/components/fx/BenchmarkArt";
+import { MotionControl } from "@/components/fx/Motion";
+import { EXAMPLE_MINT } from "@/lib/example";
 import type { Metadata } from "next";
 import { ClaimRow } from "@/components/ClaimRow";
 import { Disc } from "@/components/Disc";
@@ -23,7 +27,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const MINT = "DatumExamp1eMintA11111111111111111111111111";
+const MINT = EXAMPLE_MINT;
 const PUBLISHER = "7p9vKmJgcGiFsPEEoPvVevREc4MGsKRVTh4n7FJPLwCm";
 const SIG = "ExampLe1SignaTure1111111111111111111111111111111111111111111111111111111111111111";
 
@@ -104,7 +108,7 @@ export default function Styleguide() {
   return (
     <>
       <header className="sg-hero">
-        <p className="caps">Design review · direction B, Benchmark</p>
+        <ArtSeal kind="example" />
         <h1>Styleguide</h1>
         <p>
           Every component Datum uses, with made-up data. Nothing on this page is a real claim about a real token.
@@ -114,7 +118,7 @@ export default function Styleguide() {
             ["colour", "Colour"], ["type", "Type"], ["shape", "Space and shape"], ["controls", "Controls"],
             ["stamp", "Disc and stamp"], ["status", "StatusMark"], ["relation", "Relation and stability"],
             ["ruler", "Ruler"], ["verdict", "VerdictStrip"], ["claims", "ClaimRow and evidence"],
-            ["picker", "Publish"], ["stepper", "Steps"], ["example", "Example"],
+            ["picker", "Publish"], ["stepper", "Steps"], ["example", "Example"], ["motion-art", "Motion and artwork"],
           ].map(([id, label]) => (
             <li key={id}><a href={`#${id}`}>{label}</a></li>
           ))}
@@ -362,6 +366,27 @@ export default function Styleguide() {
             ]}
           />
         </div>
+      </section>
+
+      <section className="sg-section stack" id="motion-art">
+        <h2>Motion and artwork</h2>
+        <MotionControl />
+        <div className="sg-controls">
+          <AddressMark address={MINT} />
+          {DISC_ART.map((kind) => <img key={kind} src={`/art/disc-${kind}.svg`} alt={kind} width="48" height="48" />)}
+          {REGISTRATION_ART.map((kind) => <img key={kind} src={`/art/registration-${kind}.svg`} alt={`Registration ${kind}`} width="32" height="32" />)}
+          <img src="/art/halftone.svg" alt="Halftone" width="48" height="48" />
+        </div>
+        <div className="sg-controls">
+          {Object.entries(SEAL_ART).map(([kind, label]) => <img key={kind} src={`/art/seal-${kind}.svg`} alt={label} height="25" />)}
+        </div>
+        <div className="sg-controls">
+          {STATE_ART.map((kind) => <figure key={kind}><StateArt kind={kind} /><figcaption>{kind.replaceAll("-", " ")}</figcaption></figure>)}
+        </div>
+        <p className="status-slot measure-loading">Checking against the chain…</p>
+        <div className="measure-tape" aria-hidden="true"><span /></div>
+        <ul className="claims">{CLAIMS.slice(0, 1).map((claim) => <ClaimRow key={claim.id} claim={claim} changed={1} />)}</ul>
+        <p className="caption">Hover or press a button to see its offset. Tab shows its focus ring. Set Motion to Off for the still presentation.</p>
       </section>
 
       <section className="sg-section" id="example">
