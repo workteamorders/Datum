@@ -29,6 +29,8 @@
   --palette-edge: #62665f;
   --palette-fade: #7c8178;
   --palette-sunk-light: #b8bcb5;
+  --palette-field: #38362f;
+  --palette-field-rule: #6b675a;
 
   /* ---- semantic colour ---- */
   --color-bg: var(--palette-concrete);
@@ -117,4 +119,15 @@
     --dur-quick: 0ms;
     --dur-sheet: 0ms;
   }
+}
+
+:root {
+  --fx-field: var(--palette-field);
+  --fx-neutral: var(--palette-field-rule);
+  --fx-shade: var(--palette-seam);
+  --dur-measure: 220ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-measure: 0ms; }
 }

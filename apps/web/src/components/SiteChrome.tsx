@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Disc } from "./Disc";
+import { MotionControl } from "./fx/Motion";
 import { Sheet } from "./Sheet";
 
 const NAV = [
@@ -41,6 +42,7 @@ function MobileMenu() {
         <nav aria-label="Main, in the menu">
           <NavLinks className="nav nav--sheet" onNavigate={() => setOpen(false)} />
         </nav>
+        <MotionControl />
       </Sheet>
     </>
   );
@@ -57,6 +59,7 @@ export function SiteHeader() {
         <nav aria-label="Main" className="nav-inline">
           <NavLinks />
         </nav>
+        <MotionControl className="motion-inline" />
         <MobileMenu />
       </div>
     </header>
@@ -68,6 +71,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="wrap">
         <p>Datum reads public chain data in your browser. It never holds keys and never sends a transaction you did not sign.</p>
+        <MotionControl />
         <p>Claims are statements published by wallets. A result says what the chain shows now, not what anyone intended.</p>
       </div>
     </footer>
