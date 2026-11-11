@@ -4,15 +4,14 @@ import { PREDICATES } from "@datum/protocol";
 import { useHomeReading } from "./HomeData";
 import { formatInt } from "@/lib/view";
 
-/** Four figures. Three come from the latest read and show a dash when it failed; one is fixed by this version. */
+/** Four figures. Three come from the latest read and show a dash when that part failed; one is fixed by this version. */
 export function StatTiles() {
   const reading = useHomeReading();
-  const ready = reading.s === "ready";
-  const claims = ready ? reading.claims : [];
+  const claims = reading.s === "ready" ? reading.claims : null;
   const tiles = [
-    { label: "Claims in the latest read", value: ready ? formatInt(claims.length) : "—" },
-    { label: "Tokens those claims name", value: ready ? formatInt(new Set(claims.map((c) => c.memo.m)).size) : "—" },
-    { label: "Latest slot read", value: ready && reading.slot !== null ? formatInt(reading.slot) : "—" },
+    { label: "Claims in the latest read", value: claims ? formatInt(claims.length) : "—" },
+    { label: "Tokens those claims name", value: claims ? formatInt(new Set(claims.map((c) => c.memo.m)).size) : "—" },
+    { label: "Latest slot read", value: reading.s === "ready" && reading.slot !== null ? formatInt(reading.slot) : "—" },
     { label: "Statement kinds this version reads", value: formatInt(PREDICATES.length) },
   ];
   return (

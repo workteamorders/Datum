@@ -54,3 +54,37 @@ test("addresses in the ticker are not put in capitals", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".ticker__link").first()).toHaveCSS("text-transform", "none");
 });
+
+test("the hero keeps moving: the dial turns, the measuring loop runs, the crosshair follows the pointer", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".hero-field__spin")).toHaveCSS("animation-name", "hf-spin");
+  const angle = () => page.locator(".hero-field__spin").evaluate((el) => { const m = new DOMMatrix(getComputedStyle(el).transform); return Math.atan2(m.b, m.a); });
+  const first = await angle();
+  await page.waitForTimeout(1500);
+  expect(await angle()).not.toBe(first);
+  await expect(page.locator(".hero-field__line")).toHaveCSS("animation-iteration-count", "infinite");
+  await page.mouse.move(5, 450);
+  await expect.poll(() => page.locator(".hero-field").evaluate((el) => Number(el.style.getPropertyValue("--px")))).toBeLessThan(-0.5);
+  await page.mouse.move(1270, 450);
+  await expect.poll(() => page.locator(".hero-field").evaluate((el) => Number(el.style.getPropertyValue("--px")))).toBeGreaterThan(0.5);
+});
+
+test("with motion off the hero is a still picture and ignores the pointer", async ({ page }) => {
+  await page.goto("/?motion=off");
+  await expect(page.locator(".hero-field__spin")).toHaveCSS("animation-name", "none");
+  await page.mouse.move(5, 450);
+  await page.waitForTimeout(200);
+  expect(await page.locator(".hero-field").evaluate((el) => el.style.getPropertyValue("--px"))).toBe("");
+});
+
+test("an unread feed is shown as a dash, never as zero claims", async ({ page }) => {
+  await page.route("**/api/rpc", async (route) => {
+    const body = route.request().postData() ?? "";
+    if (body.includes("getLatestBlockhash")) return route.continue();
+    return route.abort();
+  });
+  await page.goto("/");
+  await expect(page.locator(".hero-field__stamp .num")).not.toHaveText("—");
+  await expect(page.locator(".tile__value").nth(0)).toHaveText("—");
+  await expect(page.locator(".ticker__empty")).toHaveText("No recent claims read right now.");
+});

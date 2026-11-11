@@ -12,7 +12,7 @@ const MAX_ITEMS = 8;
  */
 export function Ticker() {
   const reading = useHomeReading();
-  const claims = reading.s === "ready" ? reading.claims.slice(0, MAX_ITEMS) : [];
+  const claims = reading.s === "ready" && reading.claims ? reading.claims.slice(0, MAX_ITEMS) : [];
 
   if (claims.length === 0) {
     return (

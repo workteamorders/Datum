@@ -9,12 +9,23 @@ import { rpc } from "@/lib/rpc";
 export type HomeReading =
   | { s: "waiting" }
   | { s: "failed" }
-  | { s: "ready"; slot: number | null; claims: Claim[] };
+  | { s: "ready"; slot: number | null; claims: Claim[] | null };
 
 const Context = createContext<HomeReading>({ s: "waiting" });
 export const useHomeReading = () => useContext(Context);
 
 const SLOT_METHOD = "getLatestBlockhash";
+/** How often the slot is read again while the page is open and visible. */
+const SLOT_REFRESH_MS = 15_000;
+
+async function readSlot(): Promise<number | null> {
+  try {
+    const r = await rpc.call<{ context?: { slot?: number } }>(SLOT_METHOD, [{ commitment: "confirmed" }]);
+    return typeof r?.context?.slot === "number" ? r.context.slot : null;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Reads the latest slot and the newest claims once, after the page has settled,
@@ -28,16 +39,19 @@ export function HomeData({ children }: { children: ReactNode }) {
     let idle: number | undefined;
     let timer: number | undefined;
     const run = async () => {
-      const [slotResult, feedResult] = await Promise.allSettled([
-        rpc.call<{ context?: { slot?: number } }>(SLOT_METHOD, [{ commitment: "confirmed" }]),
-        readFeedClaims(rpc),
-      ]);
+      const [slot, feedResult] = await Promise.all([readSlot(), readFeedClaims(rpc).then((v) => ({ ok: true as const, v }), () => ({ ok: false as const }))]);
       if (!alive) return;
-      const slot = slotResult.status === "fulfilled" && typeof slotResult.value?.context?.slot === "number" ? slotResult.value.context.slot : null;
-      if (feedResult.status === "fulfilled") setReading({ s: "ready", slot, claims: feedResult.value.claims });
-      else if (slot !== null) setReading({ s: "ready", slot, claims: [] });
+      if (feedResult.ok) setReading({ s: "ready", slot, claims: feedResult.v.claims });
+      else if (slot !== null) setReading({ s: "ready", slot, claims: null });
       else setReading({ s: "failed" });
     };
+    // The slot moves about twice a second on mainnet; reading it again keeps the stamp honest. Only while the page is visible.
+    const refresh = window.setInterval(async () => {
+      if (document.hidden) return;
+      const slot = await readSlot();
+      if (!alive || slot === null) return;
+      setReading((cur) => (cur.s === "ready" ? { ...cur, slot } : { s: "ready", slot, claims: null }));
+    }, SLOT_REFRESH_MS);
     const start = () => {
       if (typeof window.requestIdleCallback === "function") idle = window.requestIdleCallback(() => void run(), { timeout: 2000 });
       else timer = window.setTimeout(() => void run(), 300);
@@ -46,6 +60,7 @@ export function HomeData({ children }: { children: ReactNode }) {
     else window.addEventListener("load", start, { once: true });
     return () => {
       alive = false;
+      window.clearInterval(refresh);
       window.removeEventListener("load", start);
       if (idle !== undefined) window.cancelIdleCallback(idle);
       if (timer !== undefined) clearTimeout(timer);

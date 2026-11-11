@@ -70,25 +70,47 @@ main:has(.home) > .wrap { max-width: none; padding-inline: 0; }
 .hf-cross { stroke: var(--color-bg); stroke-width: 4; stroke-linecap: square; }
 .hero-field__line { fill: none; stroke: var(--color-accent); stroke-width: 3; stroke-dasharray: 1; stroke-dashoffset: 0; }
 .hero-field__cap { fill: none; stroke: var(--color-accent); stroke-width: 3; }
-.hero-field__aim, .hero-field__disc { transform-box: fill-box; transform-origin: center; }
+.hero-field__disc { transform-box: fill-box; transform-origin: center; }
 .hero-field__stamp {
   position: absolute; right: 0; bottom: 2%; max-width: none; padding: var(--space-2) var(--space-3);
   border: 2px solid var(--color-accent); background: var(--color-bg); color: var(--color-accent);
   font-size: var(--text-sm); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; transform: rotate(-4deg);
 }
 .hero-field__stamp-label { color: var(--color-ink); }
-[data-motion="full"] .hero-field__line { animation: hf-draw 900ms var(--ease-stamp) 200ms both; }
-[data-motion="full"] .hero-field__cap { animation: hf-fade 120ms linear 1000ms both; }
-[data-motion="full"] .hero-field__disc { animation: hf-lock 520ms var(--ease-stamp) 1000ms both; }
+/* Motion. One 10 s measuring loop (line in, lock, stamp, fade out) plus a slow dial. Still mode shows the finished picture. */
+.hf-ring--dash { stroke-dasharray: 3 11; stroke: var(--color-ink-dim); stroke-width: 1.5; }
+.hero-field__dial, .hero-field__spin, .hero-field__counter, .hero-field__lean, .hero-field__aim { transform-box: view-box; transform-origin: 50% 50%; }
+.hero-field__lean { transform: translate(calc(var(--px, 0) * 7px), calc(var(--py, 0) * 7px)); transition: transform 240ms ease-out; }
+.hero-field__aim { transform: translate(calc(var(--px, 0) * 12px), calc(var(--py, 0) * 12px)); transition: transform 160ms ease-out; }
+.hero-field__dial { transform: translate(calc(var(--px, 0) * -5px), calc(var(--py, 0) * -5px)); transition: transform 320ms ease-out; }
+[data-motion="full"] .hero-field__dial { animation: hf-fade 600ms linear both; }
+[data-motion="full"] .hero-field__spin { animation: hf-spin 150s linear infinite; }
+[data-motion="full"] .hero-field__counter { animation: hf-fade 600ms linear both; }
+[data-motion="full"] .hero-field__counter .hf-ring { transform-box: view-box; transform-origin: 50% 50%; animation: hf-spin 110s linear infinite reverse; }
 [data-motion="full"] .hero-field__rings { animation: hf-fade 600ms linear both; }
-[data-motion="full"] .hero-field__stamp { animation: hf-stamp 260ms var(--ease-stamp) 1500ms both; }
-@keyframes hf-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+[data-motion="full"] .hero-field__line { animation: hf-measure-line 10s var(--ease-stamp) 200ms infinite both; }
+[data-motion="full"] .hero-field__cap { animation: hf-measure-cap 10s linear 200ms infinite both; }
+[data-motion="full"] .hero-field__disc { animation: hf-measure-lock 10s var(--ease-stamp) 200ms infinite both; }
+[data-motion="full"] .hf-inner { transform-box: fill-box; transform-origin: center; animation: hf-breathe 5s ease-in-out 2s infinite; }
+[data-motion="full"] .hero-field__stamp { animation: hf-measure-stamp 10s var(--ease-stamp) 200ms infinite both; }
+[data-motion="full"] .hero-field__slot { animation: hf-tick 900ms ease-out both; }
 @keyframes hf-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes hf-lock {
-  0% { transform: scale(1); } 30% { transform: scale(1.05) rotate(-2deg); }
-  60% { transform: scale(0.98) rotate(1deg); } 100% { transform: scale(1) rotate(0); }
+@keyframes hf-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes hf-breathe { 50% { transform: scale(1.06); } }
+@keyframes hf-tick { from { color: var(--color-ink); } to { color: var(--color-accent); } }
+@keyframes hf-measure-line {
+  0% { stroke-dashoffset: 1; opacity: 1; } 9% { stroke-dashoffset: 0; opacity: 1; }
+  90% { stroke-dashoffset: 0; opacity: 1; } 97%, 100% { stroke-dashoffset: 0; opacity: 0; }
 }
-@keyframes hf-stamp { from { opacity: 0; transform: rotate(-4deg) scale(1.25); } to { opacity: 1; transform: rotate(-4deg) scale(1); } }
+@keyframes hf-measure-cap { 0%, 8% { opacity: 0; } 9%, 90% { opacity: 1; } 97%, 100% { opacity: 0; } }
+@keyframes hf-measure-lock {
+  0%, 9% { transform: scale(1); } 12% { transform: scale(1.05) rotate(-2deg); }
+  15% { transform: scale(0.98) rotate(1deg); } 18%, 100% { transform: scale(1) rotate(0); }
+}
+@keyframes hf-measure-stamp {
+  0%, 10% { opacity: 0; transform: rotate(-4deg) scale(1.25); } 14%, 90% { opacity: 1; transform: rotate(-4deg) scale(1); }
+  97%, 100% { opacity: 0; transform: rotate(-4deg) scale(1); }
+}
 
 /* Ticker */
 .ticker { position: relative; overflow: hidden; background: var(--palette-night-2); color: var(--palette-concrete); border-block: 1px solid var(--palette-night-line); }
@@ -143,7 +165,8 @@ main:has(.home) > .wrap { max-width: none; padding-inline: 0; }
 .band--end .not-told p { font-size: var(--text-lg); color: var(--color-ink); max-width: 56ch; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ticker__track, .hero-field__line, .hero-field__disc, .hero-field__stamp { animation: none !important; }
+  .ticker__track, .hero-field__line, .hero-field__cap, .hero-field__disc, .hero-field__stamp, .hero-field__dial, .hero-field__spin, .hero-field__counter, .hero-field__counter .hf-ring, .hero-field__slot, .hf-inner { animation: none !important; }
+  .hero-field__lean, .hero-field__aim, .hero-field__dial { transform: none !important; }
 }
 
 /* Addresses are case-sensitive: they are never transformed, whatever element they sit in. */
