@@ -3,6 +3,8 @@ import { join } from "node:path";
 import { Marked } from "marked";
 import type { Metadata } from "next";
 import { SpecBody } from "@/components/SpecBody";
+import { PageHero } from "@/components/PageHero";
+import { TocRail } from "@/components/TocRail";
 
 export const metadata: Metadata = { title: "Specification" };
 
@@ -23,11 +25,20 @@ const md = new Marked({
 
 export default function SpecPage() {
   const source = readFileSync(join(process.cwd(), "..", "..", "docs", "SPEC.md"), "utf8");
-  const html = md.parse(source) as string;
+  const full = md.parse(source) as string;
+  // The document's own first heading becomes the page title; the rest is the body.
+  const first = /<h1[^>]*>([\s\S]*?)<\/h1>\n?/.exec(full);
+  const html = first ? full.replace(first[0], "") : full;
+  const title = first ? <span dangerouslySetInnerHTML={{ __html: first[1] ?? "" }} /> : "Specification";
   return (
-    <article className="prose">
-      <p className="caps">Specification</p>
-      <SpecBody html={html} />
-    </article>
+    <>
+      <PageHero eyebrow="Specification" title={title} lede="The exact rules Datum follows. The site, the tests and any other reader follow this document." sheet="02" variant={4} />
+      <div className="band__in page-body page-body--toc">
+        <TocRail />
+        <article className="prose prose--own-numbers">
+          <SpecBody html={html} />
+        </article>
+      </div>
+    </>
   );
 }

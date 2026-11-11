@@ -149,7 +149,9 @@ function Token({ mint }: { mint: string }) {
   };
 
   return (
-    <div className="token stack">
+    <div className="token">
+      <div className="band on-night page-hero tokenband">
+      <div className="band__in">
       <header className="tokenhead">
         <div className="tokenhead__text">
           <p className="caps">Token</p>
@@ -170,7 +172,11 @@ function Token({ mint }: { mint: string }) {
           </div>
         )}
       </header>
+      </div>
+      <span className="ruler-edge" aria-hidden="true" />
+      </div>
 
+      <div className="band__in stack page-body">
       {load.state === "loading" && <p role="status" className="dim status-slot measure-loading">Reading the chain…</p>}
 
       {load.state === "failed" && (
@@ -274,6 +280,7 @@ function Token({ mint }: { mint: string }) {
       )}
 
       {load.state !== "loading" && <NotTold />}
+      </div>
     </div>
   );
 }

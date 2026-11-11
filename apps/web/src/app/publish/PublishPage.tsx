@@ -14,6 +14,7 @@ import { PredicatePicker, type Selection } from "@/components/PredicatePicker";
 import { Ruler } from "@/components/Ruler";
 import { SignerRelationLine } from "@/components/SignerRelationLine";
 import { StatusMark } from "@/components/StatusMark";
+import { PageHero } from "@/components/PageHero";
 import { StepProgress } from "@/components/StepProgress";
 import { CLUSTER_LABEL, clusterFromGenesis, type Cluster } from "@/lib/cluster";
 import { formatSol } from "@/lib/format";
@@ -272,14 +273,15 @@ export function PublishPage() {
   const busy = phase.kind === "preparing" || phase.kind === "working";
 
   return (
-    <div className="stack publish pointer-area">
+    <div className="publish pointer-area">
       <PointerAccent />
-      <header className="stack">
-        <p className="caps">Publish</p>
-        <h1>Publish a claim</h1>
-        <p className="lede">
-          A claim is a public statement from your wallet about a token. Anyone can check it against the chain at any time. It cannot be withdrawn. Publishing a newer claim for the same token replaces it in the list, and both stay on the chain.
-        </p>
+      <PageHero
+        eyebrow="Publish"
+        title="Publish a claim"
+        lede="A claim is a public statement from your wallet about a token. Anyone can check it against the chain at any time. It cannot be withdrawn. Publishing a newer claim for the same token replaces it in the list, and both stay on the chain."
+        sheet="06"
+        variant={0}
+      >
         <div className="status-slot">
           <p className="chip" data-cluster={cluster ?? "unknown"}>{cluster ? CLUSTER_LABEL[cluster] : "Reading cluster…"}</p>
           {cluster === "mainnet" && <p className="caption">This is mainnet. Publishing costs a real network fee, shown before you sign.</p>}
@@ -291,8 +293,9 @@ export function PublishPage() {
             </p>
           )}
         </div>
-      </header>
+      </PageHero>
 
+      <div className="band__in stack page-body">
       <StepProgress stage={stage} />
 
       {editing && step === 1 && (
@@ -521,6 +524,7 @@ export function PublishPage() {
           </section>
         );
       })()}
+      </div>
     </div>
   );
 }

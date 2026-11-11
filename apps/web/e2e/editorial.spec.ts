@@ -88,3 +88,28 @@ test("an unread feed is shown as a dash, never as zero claims", async ({ page })
   await expect(page.locator(".tile__value").nth(0)).toHaveText("—");
   await expect(page.locator(".ticker__empty")).toHaveText("No recent claims read right now.");
 });
+
+for (const [path, title] of [["/terms", "Risk and terms"], ["/methodology", "How Datum reads a claim"], ["/spec", /Datum protocol/], ["/recent", "Recent claims"], ["/publish", "Publish a claim"]] as const) {
+  test(`${path} has the night head with one h1, a turning disc and a ruler edge`, async ({ page }) => {
+    await page.goto(path);
+    await expect(page.getByRole("heading", { level: 1, name: title })).toHaveCount(1);
+    await expect(page.locator(".page-hero .page-disc")).toBeVisible();
+    await expect(page.locator(".page-hero .ruler-edge")).toHaveCount(1);
+    await expect(page.locator(".page-disc__spin")).toHaveCSS("animation-name", "hf-spin");
+  });
+}
+
+test("prose pages list their sections on a side rail and number them", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/terms");
+  const links = page.locator(".toc a");
+  await expect(links).toHaveCount(await page.locator(".prose h2").count());
+  await links.nth(2).click();
+  await expect(page).toHaveURL(/#reading$/);
+  await expect(page.locator(".prose h2").first()).toHaveCSS("counter-increment", /sec 1/);
+});
+
+test("with motion off the inner-page disc is still", async ({ page }) => {
+  await page.goto("/terms?motion=off");
+  await expect(page.locator(".page-disc__spin")).toHaveCSS("animation-name", "none");
+});

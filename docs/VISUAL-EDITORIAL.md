@@ -23,6 +23,7 @@ Kesimpulan: yang perlu dinaikkan di Datum adalah arah seni, tipografi, ritme bag
 | Ticker | Klaim terbaru yang dibaca dari chain. Jeda saat hover atau fokus. |
 | Tepi | `.ruler-edge`: dua gradien CSS berupa tick penggaris, di bawah ticker, di atas Reading 04, dan di atas footer. |
 | Semua halaman | Header dan footer malam, huruf display, tepi penggaris. `/styleguide` memuat bagian "Night band and ruler edge". |
+| Halaman dalam | Kepala malam bersama (`PageHero`) dengan cakram berputar (40 dan 26 detik per putaran, pusat berbeda tiap halaman), bagian bernomor besar, dan daftar isi di samping untuk halaman prosa (D-076). Kepala halaman Token ikut malam. |
 
 ## Data nyata, bukan karangan
 

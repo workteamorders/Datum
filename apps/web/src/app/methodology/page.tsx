@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
+import { PageHero } from "@/components/PageHero";
+import { TocRail } from "@/components/TocRail";
 
 export const metadata: Metadata = { title: "Methodology" };
 
 export default function Methodology() {
   return (
+    <>
+    <PageHero eyebrow="Methodology" title="How Datum reads a claim" lede="Datum checks each published claim against the chain again, in your browser, every time you open a token. Nothing is cached on a server and no result is stored." sheet="03" variant={1} />
+    <div className="band__in page-body page-body--toc">
+    <TocRail />
     <article className="prose">
-      <p className="caps">Methodology</p>
-      <h1>How Datum reads a claim</h1>
-      <p className="lede">Datum checks each published claim against the chain again, in your browser, every time you open a token. Nothing is cached on a server and no result is stored.</p>
 
       <h2 id="what-is-read">What is read</h2>
       <p>For each token Datum reads, in one pass: the mint account, the Metaplex metadata account, the pump.fun curve account (used only to work out who created a pump.fun coin), and the account of the token program together with its program data account. Every answer carries the slot it was read at. The slot comes from the RPC response. The “12 s ago” label uses this device’s clock.</p>
@@ -47,5 +50,7 @@ export default function Methodology() {
       </ul>
       <p>The exact rules are in the <a href="/spec">specification</a>.</p>
     </article>
+    </div>
+    </>
   );
 }

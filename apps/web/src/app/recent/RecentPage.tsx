@@ -1,6 +1,7 @@
 "use client";
 
 import { AddressMark, StateArt } from "@/components/fx/BenchmarkArt";
+import { PageHero } from "@/components/PageHero";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { decodeSnapshot, evaluateClaim, signerRelations, type Claim, type Snapshot, type Status } from "@datum/protocol";
@@ -171,11 +172,11 @@ export function RecentPage() {
   }, [state]);
 
   return (
-    <div className="stack page-reserve">
-      <p className="caps">Recent</p>
-      <h1>Recent claims</h1>
-      <p className="lede">The newest claims published to Datum, for any token. Each statement is checked against the chain when you open this page. Anyone can publish, so this is a list of what was published, newest first. It is not ranked and says nothing about which tokens to pick. A wallet may have published a newer claim since: open the token to see its current list.</p>
+    <>
+    <PageHero eyebrow="Recent" title="Recent claims" lede="The newest claims published to Datum, for any token. Each statement is checked against the chain when you open this page. Anyone can publish, so this is a list of what was published, newest first. It is not ranked and says nothing about which tokens to pick. A wallet may have published a newer claim since: open the token to see its current list." sheet="04" variant={3}>
       <p className="chip" data-cluster={cluster ?? "unknown"}>{cluster ? CLUSTER_LABEL[cluster] : "Reading cluster…"}</p>
+    </PageHero>
+    <div className="band__in stack page-body page-reserve">
 
       {state.s === "loading" && <p role="status" className="dim status-slot measure-loading">Reading the feed…</p>}
       {state.s === "failed" && (
@@ -203,5 +204,6 @@ export function RecentPage() {
         </>
       )}
     </div>
+    </>
   );
 }

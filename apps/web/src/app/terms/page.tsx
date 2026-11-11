@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
+import { PageHero } from "@/components/PageHero";
+import { TocRail } from "@/components/TocRail";
 
 export const metadata: Metadata = { title: "Risk and terms" };
 
 export default function Terms() {
   return (
+    <>
+    <PageHero eyebrow="Risk and terms" title="Risk and terms" lede="Read this before you rely on a result or publish a claim." sheet="05" variant={2} />
+    <div className="band__in page-body page-body--toc">
+    <TocRail />
     <article className="prose">
-      <p className="caps">Risk and terms</p>
-      <h1>Risk and terms</h1>
       <p className="notice notice--warn" role="note">
         <b>Draft, awaiting legal review.</b> This text is written in plain language and has not been reviewed by a lawyer. Treat it as a description of how Datum works, not as a final contract.
       </p>
-      <p className="lede">Read this before you rely on a result or publish a claim.</p>
 
       <h2 id="not-advice">Information only</h2>
       <p>Datum shows what a token’s accounts contain on the Solana chain at the moment they were read, next to statements that wallets have published. It is not financial, investment, legal or tax advice. It does not say whether a token is a good idea, who is behind it, whether liquidity can be pulled, or whether a claim was made in good faith.</p>
@@ -39,5 +42,7 @@ export default function Terms() {
       <h2 id="availability">No promise of availability</h2>
       <p>Datum is offered as is, may change or stop without notice, and depends on third-party services. The claims themselves live on the Solana chain and do not depend on this site.</p>
     </article>
+    </div>
+    </>
   );
 }
