@@ -9,7 +9,7 @@ test("field is decorative and responds without taking input", async ({ page }) =
     if (message.type() === "error") errors.push(message.text());
   });
   await page.goto("/?motion=debug");
-  const field = page.locator("canvas");
+  const field = page.locator("canvas.bench-field");
   await expect(field).toHaveAttribute("aria-hidden", "true");
   await expect(field).toHaveCSS("pointer-events", "none");
   await expect.poll(() => page.evaluate(() => window.__fx?.frames ?? 0)).toBeGreaterThan(0);

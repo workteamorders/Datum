@@ -1,0 +1,32 @@
+/**
+ * Formulas shown inside the pointer circle. Each one states a real rule of blockchains in general or of Solana,
+ * or a rule Datum itself uses. They are decoration: nothing on a page depends on them, and none makes a claim about a token.
+ */
+export const FORMULAS = [
+  "h(n+1) = SHA-256( h(n) ‖ data )",
+  "H(block) = SHA-256( SHA-256( header ) )",
+  "H(header) < target",
+  "root = H( H(a ‖ b) ‖ H(c ‖ d) )",
+  "y² = x³ + 7  (mod p)",
+  "−x² + y² = 1 + d·x²·y²",
+  "p = 2²⁵⁵ − 19",
+  "pk = sk · G",
+  "check( pk, m, σ ) → ok",
+  "rent = (128 + n) × 3480 × 2  lamports",
+  "1 SOL = 10⁹ lamports",
+  "fee = 5000 × signatures  lamports",
+  "amount_ui = amount / 10^decimals",
+  "supply = Σ balances",
+  "balance′ = balance − amount − fee",
+  "tx ≤ 1232 bytes",
+  "memo ≤ 512 bytes",
+  "slot ≈ 400 ms",
+  "confirmed ⇒ votes ≥ ⅔ · stake",
+  "PDA = H( seeds ‖ bump ‖ program ‖ id )",
+  "P(catch up) = (q / p)^z   q < p",
+  "R(n) = 50 / 2ⁿ   per 210 000 blocks",
+  "target′ = target × T_actual / (2016 × 600 s)",
+  "nonce: find x with H( b ‖ x ) < t",
+  "lamports(new) = lamports(old) − transfer",
+  "slot(t) = ⌊ t / 400 ms ⌋",
+] as const;

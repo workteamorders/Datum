@@ -21,6 +21,7 @@ Kesimpulan: yang perlu dinaikkan di Datum adalah arah seni, tipografi, ritme bag
 | Beranda | Hero gelap, ticker, empat angka, Reading 01 sampai 04, contoh klaim berlabel, dan baris tetap "What this does not tell you" sebagai Reading 04. |
 | Hero | SVG dari kode dan hidup terus: lingkaran tick berputar (36 detik per putaran), cincin putus-putus berputar berlawanan (24 detik), satu siklus ukur 10 detik (garis masuk, cakram mengunci, cap "Measured at slot N" muncul lalu memudar), cincin dalam bernapas, crosshair dan cincin condong ke kursor (hanya mouse). Angka slot dibaca ulang tiap 15 detik selama halaman terlihat dan berkedip saat berubah. Gerak mati: gambar diam lengkap. |
 | Ticker | Klaim terbaru yang dibaca dari chain. Jeda saat hover atau fokus. |
+| Lensa kursor | Di dalam lingkaran kursor muncul rumus blockchain (D-078), menempel pada halaman, memudar di atas tautan, tombol, dan kolom isian. Mouse saja, Motion: Full saja. |
 | Tepi | `.ruler-edge`: dua gradien CSS berupa tick penggaris, di bawah ticker, di atas Reading 04, dan di atas footer. Bergeser ke samping mengikuti scroll saat gerak penuh (D-077). |
 | Semua halaman | Header dan footer malam, huruf display, tepi penggaris. `/styleguide` memuat bagian "Night band and ruler edge". |
 | Halaman dalam | Kepala malam bersama (`PageHero`) dengan cakram berputar (40 dan 26 detik per putaran, pusat berbeda tiap halaman), bagian bernomor besar, dan daftar isi di samping untuk halaman prosa (D-076). Kepala halaman Token ikut malam. |

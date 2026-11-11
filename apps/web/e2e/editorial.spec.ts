@@ -129,3 +129,55 @@ test("the ruler edges slide sideways while the page scrolls and stay put with mo
   await page.waitForTimeout(200);
   expect(await page.locator(".ticker-wrap").evaluate((el) => el.style.getPropertyValue("--ruler-shift"))).toBe("");
 });
+
+test.describe("formula lens", () => {
+  const lit = (page: import("@playwright/test").Page) =>
+    page.locator(".formula-lens").evaluate((c: HTMLCanvasElement) => {
+      const data = c.getContext("2d")!.getImageData(0, 0, c.width, c.height).data;
+      let n = 0;
+      for (let i = 3; i < data.length; i += 4) if ((data[i] ?? 0) > 20) n++;
+      return n;
+    });
+
+  test("formulas appear only inside the pointer circle", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await expect(page.locator(".formula-lens")).toHaveCount(1);
+    await page.mouse.move(700, 80);
+    await expect.poll(() => page.locator(".formula-lens").getAttribute("data-strength")).toBe("1.00");
+    await page.waitForTimeout(400);
+    const box = await page.locator(".formula-lens").boundingBox();
+    expect(box?.width).toBeLessThan(300);
+    expect(await lit(page)).toBeGreaterThan(300);
+    // the corner pixels of the canvas, outside the circle, stay empty
+    const corners = await page.locator(".formula-lens").evaluate((c: HTMLCanvasElement) => {
+      const d = c.getContext("2d")!.getImageData(0, 0, 12, 12).data;
+      return Array.from(d).filter((v, i) => i % 4 === 3 && v > 0).length;
+    });
+    expect(corners).toBe(0);
+  });
+
+  test("the lens goes away over a button and is faint over a paragraph", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await expect(page.locator(".formula-lens")).toHaveCount(1);
+    const button = await page.getByRole("button", { name: "Look up" }).boundingBox();
+    await page.mouse.move(button!.x + 10, button!.y + 10);
+    await expect.poll(() => page.locator(".formula-lens").getAttribute("data-strength")).toBe("0.00");
+    const lede = await page.locator(".hero .lede").boundingBox();
+    await page.mouse.move(lede!.x + 40, lede!.y + 10);
+    await expect.poll(async () => Number(await page.locator(".formula-lens").getAttribute("data-strength"))).toBeGreaterThan(0.25);
+    expect(Number(await page.locator(".formula-lens").getAttribute("data-strength"))).toBeLessThan(0.4);
+  });
+
+  test("with motion off there is no lens", async ({ page }) => {
+    await page.goto("/?motion=off");
+    await expect(page.locator(".formula-lens")).toHaveCount(0);
+  });
+
+  test("the lens never catches a click", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".formula-lens")).toHaveCSS("pointer-events", "none");
+    await expect(page.locator(".formula-lens")).toHaveAttribute("aria-hidden", "true");
+  });
+});

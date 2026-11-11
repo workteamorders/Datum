@@ -257,3 +257,7 @@ main:has(.page-hero) > .wrap { max-width: none; padding-inline: 0; }
 .tokenband .chip { background: transparent; color: var(--color-ink); border-color: var(--color-edge); }
 .tokenband .caption { color: var(--color-ink-dim); }
 .tokenband h1.tokenhead__mint { max-width: none; letter-spacing: 0; }
+
+/* The formula lens: a small canvas that follows the pointer, above the page, never catching a click. */
+.formula-lens { position: fixed; left: 0; top: 0; z-index: 6; pointer-events: none; will-change: transform; }
+@media (prefers-reduced-motion: reduce), (pointer: coarse) { .formula-lens { display: none; } }

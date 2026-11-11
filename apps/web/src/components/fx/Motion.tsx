@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import { usePathname } from "next/navigation";
 import { readStored, writeStored } from "@/lib/storage";
 import { LiveBackground } from "./LiveBackground";
+import { FormulaLens } from "./FormulaLens";
 import type { Motion } from "@/lib/motion";
 
 const KEY = "datum.motion";
@@ -103,6 +104,7 @@ export function MotionRoot({ children }: { children: ReactNode }) {
       <div className="motion-root" data-motion={active ? "full" : "still"}>
         {ready && mode !== "off" && <LiveBackground active={active} debug={debug} />}
         <RulerScroll active={active} path={path} />
+        {active && <FormulaLens />}
         {changedPath && <div key={path} className="route-wipe" aria-hidden="true" />}
         {children}
       </div>
