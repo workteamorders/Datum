@@ -1,0 +1,25 @@
+{
+  "name": "@datum/protocol",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "datum/0 protocol: pure parsing, canonical memo, decoding and evaluation. No DOM, no network.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@solana/kit": "8.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "fast-check": "4.10.2",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0"
+  }
+}

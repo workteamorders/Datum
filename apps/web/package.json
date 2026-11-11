@@ -1,0 +1,41 @@
+{
+  "name": "@datum/web",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "pnpm check:tokens && pnpm copy:check && next build",
+    "typecheck": "tsc --noEmit",
+    "check:tokens": "node scripts/check-tokens.mjs",
+    "copy:check": "node scripts/copy-check.mjs",
+    "test": "vitest run",
+    "rpc:check": "node scripts/rpc-check.mjs"
+  },
+  "dependencies": {
+    "@datum/protocol": "workspace:*",
+    "@solana-program/compute-budget": "0.20.0",
+    "@solana/kit": "8.6.0",
+    "@solana/wallet-standard-chains": "^1.1.2",
+    "@solana/wallet-standard-features": "1.5.0",
+    "@wallet-standard/app": "1.1.1",
+    "@wallet-standard/base": "^1.1.1",
+    "@wallet-standard/features": "^1.1.1",
+    "marked": "18.2.0",
+    "next": "16.4.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@playwright/test": "1.65.0",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "fast-check": "4.10.2",
+    "tsx": "4.21.0",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0",
+    "wrangler": "4.160.0"
+  }
+}

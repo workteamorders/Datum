@@ -1,0 +1,120 @@
+/*
+ * Datum design tokens: direction B "Benchmark".
+ * This is the only file that may contain raw colour values (pnpm check:tokens).
+ * Light mode only for v0 (docs/CONCEPTS.md).
+ *
+ * Contrast of text pairs, measured (WCAG 2.x):
+ *   ink on concrete        13.4 : 1
+ *   ink-dim on concrete     6.1 : 1
+ *   accent on concrete      5.6 : 1
+ *   oxide on concrete       6.1 : 1
+ *   concrete on accent      5.6 : 1  (label on a primary button)
+ *   on the set-in surface (cured): ink 11.6, ink-dim 5.3, accent 4.8, oxide 5.3
+ *   control edge on concrete 4.6 : 1 (non-text, needs 3 : 1)
+ * --cast is decoration only and never carries text.
+ */
+:root {
+  color-scheme: light;
+
+  /* ---- palette (raw) ---- */
+  --palette-concrete: #e2e4e1;
+  --palette-cured: #d2d5d1;
+  --palette-stamp: #1b1c1a;
+  --palette-aggregate: #4f534d;
+  --palette-bronze: #7e4c1e;
+  --palette-cast: #b98a55;
+  --palette-cast-face: #c49866;
+  --palette-oxide: #8f3520;
+  --palette-seam: #9ea39b;
+  --palette-edge: #62665f;
+  --palette-fade: #7c8178;
+  --palette-sunk-light: #b8bcb5;
+
+  /* ---- semantic colour ---- */
+  --color-bg: var(--palette-concrete);
+  --color-surface: var(--palette-cured);
+  --color-ink: var(--palette-stamp);
+  --color-ink-dim: var(--palette-aggregate);
+  --color-accent: var(--palette-bronze);
+  --color-on-accent: var(--palette-concrete);
+  --color-negative: var(--palette-oxide);
+  --color-line: var(--palette-seam); /* decorative separators */
+  --color-edge: var(--palette-edge); /* borders of controls (3 : 1 or more) */
+  --color-faded: var(--palette-fade); /* tick marks and rules with no reading */
+  --color-disc: var(--palette-cast); /* survey disc face, decoration only */
+  --color-disc-face: var(--palette-cast-face);
+  --color-disc-edge: var(--palette-bronze);
+  --color-sunk-light: var(--palette-sunk-light);
+  --color-focus: var(--palette-bronze);
+
+  /* ---- type ---- */
+  --font-display: "Chivo", system-ui, sans-serif;
+  --font-body: "Chivo", system-ui, sans-serif;
+  --font-mono: "Chivo Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --weight-body: 400;
+  --weight-strong: 600;
+  --weight-heading: 800;
+  --weight-display: 900;
+
+  --text-xs: 0.75rem; /* 12: tick labels only */
+  --text-sm: 0.8125rem; /* 13: captions */
+  --text-md: 0.9375rem; /* 15: dense rows */
+  --text-base: 1rem; /* 16: body */
+  --text-lg: 1.125rem; /* 18 */
+  --text-xl: 1.375rem; /* 22 */
+  --text-2xl: 1.75rem; /* 28 */
+  --text-3xl: 2.25rem; /* 36 */
+  --text-4xl: 2.75rem; /* 44 */
+
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-body: 1.5;
+  --track-display: -0.015em;
+  --track-caps: 0.08em;
+
+  /* ---- space (4 px base) ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  --gutter: var(--space-4);
+  --page-max: 70rem;
+  --measure: 68ch;
+
+  /* ---- shape and lines ---- */
+  --radius-panel: 4px;
+  --radius-control: 4px;
+  --radius-pill: 999px;
+  --line-1: 1px;
+  --line-2: 2px;
+  --disc-size: 24px;
+  --mark-size: 20px;
+  --target-min: 44px; /* minimum touch target */
+
+  /* ---- motion ---- */
+  --dur-stamp: 120ms;
+  --dur-quick: 80ms;
+  --dur-sheet: 250ms;
+  --ease-stamp: cubic-bezier(0.3, 0, 0.2, 1);
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --gutter: var(--space-6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-stamp: 0ms;
+    --dur-quick: 0ms;
+    --dur-sheet: 0ms;
+  }
+}

@@ -1,0 +1,7 @@
+name = "datum"
+compatibility_date = "2026-11-01"
+pages_build_output_dir = "./out"
+
+# Variables are set in the Cloudflare dashboard (Settings > Variables and Secrets), not here.
+# Production needs RPC_UPSTREAM_URL (a keyed provider; see docs/DECISIONS.md D-009) and BLOCKED_COUNTRIES.
+# Never put ALLOW_DEFAULT_UPSTREAM in production.

@@ -1,0 +1,75 @@
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-weight: var(--weight-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+img, svg { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--color-accent); text-underline-offset: 0.18em; text-decoration-thickness: var(--line-1); }
+a:hover { text-decoration-thickness: var(--line-2); }
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-control);
+}
+
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: var(--leading-snug); text-wrap: balance; }
+h1 { font-weight: var(--weight-display); font-size: var(--text-3xl); line-height: var(--leading-tight); letter-spacing: var(--track-display); }
+h2 { font-weight: var(--weight-heading); font-size: var(--text-xl); }
+h3 { font-weight: var(--weight-heading); font-size: var(--text-lg); }
+h4 { font-weight: var(--weight-strong); font-size: var(--text-base); }
+@media (min-width: 48rem) { h1 { font-size: var(--text-4xl); } h2 { font-size: var(--text-2xl); } }
+
+p { max-width: var(--measure); text-wrap: pretty; }
+code, .mono { font-family: var(--font-mono); font-size: 0.92em; overflow-wrap: anywhere; }
+.num { font-variant-numeric: tabular-nums; }
+.nowrap { white-space: nowrap; }
+.dim { color: var(--color-ink-dim); }
+.caption { font-size: var(--text-sm); color: var(--color-ink-dim); }
+.caps { font-size: var(--text-sm); letter-spacing: var(--track-caps); text-transform: uppercase; font-weight: var(--weight-strong); color: var(--color-ink-dim); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.wrap { width: 100%; max-width: var(--page-max); margin-inline: auto; padding-inline: var(--gutter); }
+.stack > * + * { margin-top: var(--space-4); }
+
+.skip {
+  position: absolute; left: var(--gutter); top: var(--space-2); z-index: 10;
+  background: var(--color-ink); color: var(--color-bg); padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-control); transform: translateY(-200%);
+}
+.skip:focus { transform: none; }
+
+/* ---- page chrome ---- */
+.site-header { border-bottom: var(--line-2) solid var(--color-ink); }
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 3.5rem; flex-wrap: wrap; padding-block: var(--space-2); }
+.brand { display: inline-flex; align-items: center; gap: var(--space-3); color: var(--color-ink); text-decoration: none; min-height: var(--target-min); }
+.brand__word { font-family: var(--font-display); font-weight: var(--weight-display); font-size: var(--text-xl); letter-spacing: var(--track-display); }
+.nav { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4); list-style: none; padding: 0; }
+.nav a { display: inline-flex; align-items: center; min-height: var(--target-min); color: var(--color-ink); font-weight: var(--weight-strong); font-size: var(--text-md); text-decoration: none; border-bottom: var(--line-2) solid transparent; }
+.nav a:hover, .nav a[aria-current="page"] { border-bottom-color: var(--color-ink); }
+main { flex: 1; padding-block: var(--space-6) var(--space-8); }
+.site-footer { border-top: var(--line-1) solid var(--color-line); padding-block: var(--space-5); color: var(--color-ink-dim); font-size: var(--text-sm); }
+.site-footer p + p { margin-top: var(--space-2); }
+
+/* Phone: the links move into the Menu sheet. */
+.btn.menu-btn { display: none; }
+@media (max-width: 40rem) {
+  .nav-inline { display: none; }
+  .btn.menu-btn { display: inline-flex; }
+}
+.nav--sheet { flex-direction: column; gap: 0; }
+.nav--sheet a { width: 100%; font-size: var(--text-lg); border-bottom: var(--line-1) solid var(--color-line); }
